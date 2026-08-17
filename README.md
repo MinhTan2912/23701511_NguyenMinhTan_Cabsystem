@@ -36,34 +36,17 @@ quadrantChart
     "Tài chính / Kế toán": [0.45, 0.75]
     "Nhà cung cấp thanh toán": [0.40, 0.70]
 ```
-# CAB - Business Analysis
+## Business Goals
 
-## 1. Project Overview
+Hệ thống CAB được xây dựng nhằm số hóa quy trình đặt xe, nâng cao hiệu quả vận hành và cải thiện trải nghiệm khách hàng. Các mục tiêu kinh doanh chính bao gồm:
 
-## 2. Business Goals
-
-## 3. Stakeholders
-
-## 4. Stakeholder Matrix
-
-## 5. Business Scope
-### In Scope
-### Out of Scope
-
-## 6. Actors
-
-## 7. Business Process
-
-## 8. Functional Requirements
-
-## 9. Non-Functional Requirements
-
-## 10. Business Rules
-
-## 11. Exception / Alternative Flows
-
-## 12. External Systems & Integrations
-
-## 13. Assumptions & Constraints
-
-## 14. Open Questions
+| ID | Business Goal | Mô tả |
+|---|---|---|
+| **BG01** | **Số hóa quy trình đặt xe** | Tự động hóa quy trình từ khi khách hàng tạo yêu cầu, tìm tài xế, thực hiện chuyến đến thanh toán và đánh giá. |
+| **BG02** | **Tối ưu phân công tài xế** | Tự động tìm và ưu tiên tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành. |
+| **BG03** | **Nâng cao trải nghiệm khách hàng** | Cho phép khách hàng đặt xe, theo dõi trạng thái chuyến, thông tin tài xế, cước phí, thanh toán và đánh giá. |
+| **BG04** | **Nâng cao hiệu quả vận hành** | Hỗ trợ nhân viên vận hành theo dõi chuyến, quản lý tài xế và xử lý các trường hợp bất thường. |
+| **BG05** | **Quản lý tập trung dữ liệu và giao dịch** | Quản lý tập trung thông tin khách hàng, tài xế, phương tiện, chuyến đi, cước phí và giao dịch. |
+| **BG06** | **Đảm bảo khả năng mở rộng** | Xây dựng nền tảng có thể phục vụ số lượng lớn người dùng và dễ dàng mở rộng dịch vụ, thanh toán và thông báo trong tương lai. |
+| **BG07** | **Đảm bảo an toàn và ổn định** | Bảo vệ dữ liệu người dùng, kiểm soát quyền truy cập và hạn chế ảnh hưởng khi một thành phần của hệ thống gặp sự cố. |
+| **BG08** | **Hỗ trợ quản trị và ra quyết định** | Cung cấp báo cáo về số chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế. |
