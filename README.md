@@ -14,3 +14,9 @@
 | 6 | **Bộ phận tài chính/kế toán** | Quản lý doanh thu, giao dịch, đối soát và báo cáo tài chính |
 | 7 | **Quản trị viên hệ thống / IT** | Quản lý tài khoản, phân quyền, bảo mật và vận hành hệ thống |
 | 8 | **Nhà cung cấp thanh toán** | Xử lý thanh toán điện tử và trả kết quả giao dịch cho CAB |
+## Ma trận Stakeholder CAB
+
+|  | **Mức độ quan tâm thấp** | **Mức độ quan tâm cao** |
+|---|---|---|
+| **Quyền lực cao** | **KEEP SATISFIED**  <br>• Bộ phận tài chính/kế toán  <br>• Nhà cung cấp thanh toán | **MANAGE CLOSELY**  <br>• Ban giám đốc  <br>• Nhân viên vận hành  <br>• Quản trị viên hệ thống / IT |
+| **Quyền lực thấp** | **MONITOR**  <br>• Không có stakeholder chính | **KEEP INFORMED**  <br>• Khách hàng  <br>• Tài xế  <br>• Nhân viên CSKH |
