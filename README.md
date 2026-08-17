@@ -16,7 +16,22 @@
 | 8 | **Nhà cung cấp thanh toán** | Xử lý thanh toán điện tử và trả kết quả giao dịch cho CAB |
 ## Ma trận Stakeholder CAB
 
-|  | **Mức độ quan tâm thấp** | **Mức độ quan tâm cao** |
-|---|---|---|
-| **Quyền lực cao** | **KEEP SATISFIED**  <br>• Bộ phận tài chính/kế toán  <br>• Nhà cung cấp thanh toán | **MANAGE CLOSELY**  <br>• Ban giám đốc  <br>• Nhân viên vận hành  <br>• Quản trị viên hệ thống / IT |
-| **Quyền lực thấp** | **MONITOR**  <br>• Không có stakeholder chính | **KEEP INFORMED**  <br>• Khách hàng  <br>• Tài xế  <br>• Nhân viên CSKH |
+```mermaid
+quadrantChart
+    title Stakeholder Matrix - CAB
+    x-axis "Interest thấp" --> "Interest cao"
+    y-axis "Power thấp" --> "Power cao"
+
+    quadrant-1 "Manage Closely"
+    quadrant-2 "Keep Satisfied"
+    quadrant-3 "Monitor"
+    quadrant-4 "Keep Informed"
+
+    "Ban giám đốc": [0.90, 0.95]
+    "Nhân viên vận hành": [0.85, 0.85]
+    "Quản trị viên / IT": [0.80, 0.90]
+    "Khách hàng": [0.90, 0.35]
+    "Tài xế": [0.85, 0.30]
+    "Nhân viên CSKH": [0.75, 0.40]
+    "Tài chính / Kế toán": [0.45, 0.75]
+    "Nhà cung cấp thanh toán": [0.40, 0.70]
