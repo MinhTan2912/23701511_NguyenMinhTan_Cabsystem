@@ -35,3 +35,34 @@ quadrantChart
     "Nhân viên CSKH": [0.75, 0.40]
     "Tài chính / Kế toán": [0.45, 0.75]
     "Nhà cung cấp thanh toán": [0.40, 0.70]
+# CAB - Business Analysis
+
+## 1. Project Overview
+
+## 2. Business Goals
+
+## 3. Stakeholders
+
+## 4. Stakeholder Matrix
+
+## 5. Business Scope
+### In Scope
+### Out of Scope
+
+## 6. Actors
+
+## 7. Business Process
+
+## 8. Functional Requirements
+
+## 9. Non-Functional Requirements
+
+## 10. Business Rules
+
+## 11. Exception / Alternative Flows
+
+## 12. External Systems & Integrations
+
+## 13. Assumptions & Constraints
+
+## 14. Open Questions
