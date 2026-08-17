@@ -35,6 +35,7 @@ quadrantChart
     "Nhân viên CSKH": [0.75, 0.40]
     "Tài chính / Kế toán": [0.45, 0.75]
     "Nhà cung cấp thanh toán": [0.40, 0.70]
+```
 # CAB - Business Analysis
 
 ## 1. Project Overview
