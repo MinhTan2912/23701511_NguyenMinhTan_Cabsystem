@@ -159,3 +159,140 @@ Hệ thống CAB cần đáp ứng các yêu cầu nghiệp vụ cốt lõi nh�
 | **BR44** | Đánh giá tài xế | Sau khi chuyến đi hoàn thành, khách hàng có thể đánh giá tài xế bằng số sao. |
 | **BR45** | Nhận xét về chuyến đi | Khách hàng có thể để lại nhận xét về tài xế hoặc chuyến đi. |
 | **BR46** | Lưu kết quả đánh giá | Hệ thống lưu kết quả đánh giá để phục vụ quản lý chất lượng dịch vụ. |
+## 7. Functional Requirements – Yêu cầu chức năng
+
+Các Business Requirements được phân rã thành các yêu cầu chức năng cụ thể mà hệ thống cần thực hiện.
+
+### 7.1. Quản lý tài khoản
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR01.1** | BR01 – Đăng ký tài khoản | Hệ thống cho phép người dùng nhập thông tin cần thiết để tạo tài khoản. |
+| **FR01.2** | BR01 – Đăng ký tài khoản | Hệ thống kiểm tra thông tin đăng ký và đảm bảo tài khoản không bị trùng. |
+| **FR02.1** | BR02 – Đăng nhập | Hệ thống cho phép người dùng nhập thông tin xác thực để đăng nhập. |
+| **FR02.2** | BR02 – Đăng nhập | Hệ thống kiểm tra thông tin xác thực và chỉ cho phép truy cập khi hợp lệ. |
+| **FR02.3** | BR02 – Đăng xuất | Hệ thống cho phép người dùng đăng xuất khỏi tài khoản. |
+| **FR03.1** | BR03 – Cập nhật thông tin | Hệ thống cho phép khách hàng cập nhật thông tin cá nhân. |
+| **FR03.2** | BR03 – Cập nhật thông tin | Hệ thống lưu thông tin cá nhân sau khi cập nhật hợp lệ. |
+| **FR04.1** | BR04 – Phân quyền | Hệ thống xác định vai trò của người dùng sau khi đăng nhập. |
+| **FR04.2** | BR04 – Phân quyền | Hệ thống chỉ cho phép người dùng truy cập các chức năng phù hợp với vai trò. |
+
+### 7.2. Quản lý tài xế
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR05.1** | BR05 – Quản lý tài xế | Hệ thống cho phép lưu và quản lý thông tin hồ sơ tài xế. |
+| **FR06.1** | BR06 – Quản lý phương tiện | Tài xế có thể thêm và cập nhật thông tin phương tiện. |
+| **FR07.1** | BR07 – Trạng thái tài xế | Tài xế có thể chuyển trạng thái sang sẵn sàng hoặc không sẵn sàng nhận chuyến. |
+| **FR07.2** | BR07 – Trạng thái tài xế | Hệ thống chỉ đưa tài xế đang sẵn sàng vào danh sách tìm kiếm chuyến. |
+| **FR08.1** | BR08 – Vị trí tài xế | Hệ thống nhận và cập nhật vị trí hiện tại của tài xế. |
+| **FR08.2** | BR08 – Vị trí tài xế | Hệ thống sử dụng vị trí tài xế để phục vụ việc tìm kiếm và phân công chuyến. |
+
+### 7.3. Đặt xe
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR09.1** | BR09 – Tạo yêu cầu đặt xe | Hệ thống cho phép khách hàng tạo yêu cầu đặt xe. |
+| **FR10.1** | BR10 – Điểm đón/điểm đến | Hệ thống cho phép khách hàng nhập điểm đón và điểm đến. |
+| **FR10.2** | BR10 – Điểm đón/điểm đến | Hệ thống kiểm tra điểm đón và điểm đến trước khi tạo yêu cầu. |
+| **FR11.1** | BR11 – Lựa chọn loại xe | Hệ thống hiển thị các loại xe/dịch vụ đang được hỗ trợ. |
+| **FR11.2** | BR11 – Lựa chọn loại xe | Khách hàng có thể lựa chọn loại xe khi đặt chuyến. |
+| **FR12.1** | BR12 – Quản lý yêu cầu | Hệ thống tạo mã chuyến và lưu thông tin yêu cầu đặt xe. |
+| **FR12.2** | BR12 – Quản lý yêu cầu | Hệ thống cập nhật trạng thái yêu cầu trong quá trình xử lý. |
+| **FR13.1** | BR13 – Hủy yêu cầu | Khách hàng có thể hủy yêu cầu theo trạng thái và chính sách cho phép. |
+
+### 7.4. Tìm và phân công tài xế
+
+Đây là **chức năng quan trọng nhất của hệ thống CAB**, vì nó quyết định yêu cầu đặt xe có được kết nối với tài xế hay không.
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR14.1** | BR14 – Tự động tìm tài xế | Hệ thống xác định vị trí hiện tại của khách hàng từ thông tin điểm đón. |
+| **FR14.2** | BR14 – Tự động tìm tài xế | Hệ thống lấy danh sách các tài xế đang hoạt động và sẵn sàng nhận chuyến. |
+| **FR14.3** | BR14 – Tự động tìm tài xế | Hệ thống chỉ lựa chọn tài xế có loại phương tiện phù hợp với yêu cầu của khách hàng. |
+| **FR14.4** | BR14 – Tự động tìm tài xế | Hệ thống loại bỏ các tài xế không đủ điều kiện nhận chuyến. |
+| **FR15.1** | BR15 – Ưu tiên tài xế | Hệ thống tính khoảng cách giữa tài xế và điểm đón. |
+| **FR15.2** | BR15 – Ưu tiên tài xế | Hệ thống có thể ưu tiên tài xế dựa trên khoảng cách đến khách hàng. |
+| **FR15.3** | BR15 – Ưu tiên tài xế | Hệ thống có thể sử dụng các tiêu chí vận hành khác như trạng thái và mức độ phù hợp để xếp thứ tự tài xế. |
+| **FR16.1** | BR16 – Gửi yêu cầu nhận chuyến | Hệ thống gửi thông tin yêu cầu chuyến đến tài xế được lựa chọn. |
+| **FR16.2** | BR16 – Gửi yêu cầu nhận chuyến | Thông tin gửi cho tài xế bao gồm điểm đón, điểm đến, loại xe và thông tin cần thiết của chuyến. |
+| **FR17.1** | BR17 – Nhận/từ chối chuyến | Tài xế có thể chấp nhận yêu cầu chuyến. |
+| **FR17.2** | BR17 – Nhận/từ chối chuyến | Tài xế có thể từ chối yêu cầu chuyến. |
+| **FR18.1** | BR18 – Tìm tài xế thay thế | Hệ thống theo dõi thời gian phản hồi của tài xế. |
+| **FR18.2** | BR18 – Tìm tài xế thay thế | Nếu tài xế từ chối, hệ thống chuyển sang tài xế phù hợp tiếp theo. |
+| **FR18.3** | BR18 – Tìm tài xế thay thế | Nếu tài xế không phản hồi trong thời gian quy định, hệ thống chuyển sang tài xế khác. |
+| **FR18.4** | BR18 – Tìm tài xế thay thế | Hệ thống không tạo yêu cầu đặt xe mới khi chuyển sang tài xế khác. |
+| **FR19.1** | BR19 – Không tìm được tài xế | Hệ thống xác định khi không còn tài xế phù hợp để thử. |
+| **FR19.2** | BR19 – Không tìm được tài xế | Hệ thống cập nhật trạng thái yêu cầu và thông báo cho khách hàng không tìm được tài xế. |
+
+### 7.5. Quản lý và theo dõi chuyến đi
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR20.1** | BR20 – Thông tin tài xế | Hệ thống hiển thị thông tin tài xế sau khi tài xế nhận chuyến. |
+| **FR20.2** | BR20 – Thông tin tài xế | Hệ thống hiển thị thông tin phương tiện của tài xế. |
+| **FR21.1** | BR21 – Theo dõi chuyến | Khách hàng có thể xem trạng thái hiện tại của chuyến đi. |
+| **FR21.2** | BR21 – Theo dõi chuyến | Hệ thống cập nhật trạng thái chuyến khi tài xế thực hiện các bước của chuyến. |
+| **FR22.1** | BR22 – Thời gian dự kiến | Hệ thống xác định khoảng cách giữa tài xế và điểm đón. |
+| **FR22.2** | BR22 – Thời gian dự kiến | Hệ thống cung cấp thời gian dự kiến tài xế đến điểm đón. |
+| **FR23.1** | BR23 – Cập nhật trạng thái | Tài xế có thể cập nhật trạng thái đã đến điểm đón. |
+| **FR23.2** | BR23 – Cập nhật trạng thái | Tài xế có thể cập nhật trạng thái đã đón khách. |
+| **FR23.3** | BR23 – Cập nhật trạng thái | Tài xế có thể cập nhật trạng thái đang di chuyển. |
+| **FR23.4** | BR23 – Cập nhật trạng thái | Tài xế có thể cập nhật trạng thái hoàn thành chuyến. |
+| **FR24.1** | BR24 – Vòng đời chuyến | Hệ thống quản lý thứ tự chuyển đổi giữa các trạng thái chuyến. |
+| **FR24.2** | BR24 – Vòng đời chuyến | Hệ thống không cho phép chuyển sang trạng thái không hợp lệ. |
+| **FR25.1** | BR25 – Lưu thông tin chuyến | Hệ thống lưu thông tin khách hàng, tài xế, điểm đón, điểm đến, trạng thái và thời gian của chuyến. |
+| **FR26.1** | BR26 – Lịch sử chuyến | Khách hàng có thể xem danh sách các chuyến đã hoàn thành. |
+| **FR26.2** | BR26 – Lịch sử chuyến | Khách hàng có thể xem chi tiết từng chuyến và số tiền phải trả. |
+
+### 7.6. Tính cước và thanh toán
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR27.1** | BR27 – Tính cước | Hệ thống xác định số tiền phải trả khi chuyến đi hoàn thành. |
+| **FR27.2** | BR27 – Tính cước | Hệ thống sử dụng loại xe/dịch vụ và thông tin chuyến để tính cước. |
+| **FR28.1** | BR28 – Thanh toán tiền mặt | Hệ thống ghi nhận trạng thái thanh toán tiền mặt của chuyến. |
+| **FR29.1** | BR29 – Thanh toán điện tử | Hệ thống tạo yêu cầu thanh toán thông qua nhà cung cấp thanh toán. |
+| **FR29.2** | BR29 – Thanh toán điện tử | Hệ thống nhận và cập nhật kết quả giao dịch từ nhà cung cấp thanh toán. |
+| **FR30.1** | BR30 – Tích hợp thanh toán | Hệ thống giao tiếp với nhà cung cấp thanh toán thông qua giao diện tích hợp. |
+| **FR30.2** | BR30 – Tích hợp thanh toán | Hệ thống không lưu thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán. |
+| **FR31.1** | BR31 – Thanh toán thất bại | Hệ thống ghi nhận trạng thái giao dịch thất bại. |
+| **FR31.2** | BR31 – Thanh toán thất bại | Hệ thống thông báo cho khách hàng khi thanh toán không thành công. |
+| **FR31.3** | BR31 – Thanh toán thất bại | Hệ thống cho phép thực hiện lại thanh toán theo chính sách doanh nghiệp. |
+| **FR32.1** | BR32 – Quản lý giao dịch | Hệ thống lưu mã giao dịch, số tiền, thời gian và trạng thái thanh toán để tra cứu. |
+
+### 7.7. Thông báo
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR33.1** | BR33 – Thông báo đặt xe | Hệ thống gửi thông báo khi yêu cầu đặt xe được tiếp nhận. |
+| **FR34.1** | BR34 – Thông báo nhận chuyến | Hệ thống thông báo cho khách hàng khi tài xế nhận chuyến. |
+| **FR34.2** | BR34 – Thông báo nhận chuyến | Hệ thống thông báo cho tài xế khi có yêu cầu chuyến phù hợp. |
+| **FR35.1** | BR35 – Thông báo trạng thái | Hệ thống gửi thông báo khi trạng thái chuyến thay đổi ở các mốc quan trọng. |
+| **FR36.1** | BR36 – Thông báo hoàn thành | Hệ thống thông báo cho khách hàng khi chuyến đi hoàn thành. |
+| **FR37.1** | BR37 – Thông báo thanh toán | Hệ thống thông báo kết quả thanh toán cho khách hàng. |
+
+### 7.8. Quản trị và vận hành
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR38.1** | BR38 – Quản lý dữ liệu | Nhân viên vận hành có thể tra cứu thông tin khách hàng, tài xế và chuyến đi. |
+| **FR39.1** | BR39 – Theo dõi hoạt động | Nhân viên vận hành có thể xem danh sách các chuyến đang diễn ra. |
+| **FR39.2** | BR39 – Theo dõi hoạt động | Nhân viên vận hành có thể xem trạng thái hoạt động của tài xế. |
+| **FR40.1** | BR40 – Tra cứu lịch sử | Nhân viên vận hành có thể tìm kiếm và xem lịch sử chuyến đi và giao dịch. |
+| **FR41.1** | BR41 – Xử lý bất thường | Nhân viên vận hành có thể xem và xử lý các chuyến có trạng thái bất thường. |
+| **FR42.1** | BR42 – Phân quyền | Hệ thống kiểm tra quyền trước khi cho phép thực hiện chức năng quản trị. |
+| **FR43.1** | BR43 – Báo cáo | Hệ thống cung cấp số lượng chuyến, doanh thu, tỷ lệ hoàn thành và tỷ lệ hủy. |
+
+### 7.9. Đánh giá chuyến đi
+
+| ID | Business Requirement | Functional Requirement |
+|---|---|---|
+| **FR44.1** | BR44 – Đánh giá tài xế | Hệ thống cho phép khách hàng đánh giá tài xế sau khi chuyến hoàn thành. |
+| **FR44.2** | BR44 – Đánh giá tài xế | Khách hàng có thể lựa chọn số sao đánh giá. |
+| **FR45.1** | BR45 – Nhận xét | Khách hàng có thể nhập nhận xét về tài xế hoặc chuyến đi. |
+| **FR46.1** | BR46 – Lưu đánh giá | Hệ thống lưu kết quả đánh giá gắn với chuyến đi và tài xế. |
+B8. Vẽ use case diagram
+B9. Đặc tả usecase
+B10 Phân tích quy trình nghiệp vụ
+
