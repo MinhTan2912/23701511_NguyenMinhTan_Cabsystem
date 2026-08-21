@@ -294,4 +294,132 @@ Các Business Requirements được phân rã thành các yêu cầu chức năn
 B9. Đặc tả usecase
 B10 Phân tích quy trình nghiệp vụ
 
+## 8. Use Case Diagram
 
+
+### 8.1. Actors
+
+| Actor | Vai trò |
+|---|---|
+| **Khách hàng** | Đăng ký, đăng nhập, đặt xe, theo dõi chuyến, thanh toán và đánh giá tài xế |
+| **Tài xế** | Quản lý hồ sơ, phương tiện, nhận/từ chối chuyến và cập nhật trạng thái chuyến |
+| **Nhân viên vận hành** | Theo dõi chuyến, tài xế, xử lý sự cố, tra cứu dữ liệu và xem báo cáo |
+| **Nhà cung cấp thanh toán** | Xử lý thanh toán điện tử và trả kết quả giao dịch |
+| **Dịch vụ bản đồ/GPS** | Cung cấp thông tin vị trí, khoảng cách và thời gian dự kiến |
+
+### 8.2. Use Case Diagram
+
+```mermaid
+flowchart LR
+
+    KH["👤 Khách hàng"]
+    TX["🚗 Tài xế"]
+    NV["👨‍💼 Nhân viên vận hành"]
+    PAY["💳 Nhà cung cấp thanh toán"]
+    GPS["📍 Dịch vụ bản đồ / GPS"]
+
+    subgraph CAB["HỆ THỐNG CAB – NỀN TẢNG ĐẶT XE"]
+
+        UC01(("Đăng ký tài khoản"))
+        UC02(("Đăng nhập"))
+        UC03(("Đăng xuất"))
+        UC04(("Cập nhật thông tin cá nhân"))
+
+        UC05(("Quản lý hồ sơ tài xế"))
+        UC06(("Quản lý phương tiện"))
+        UC07(("Cập nhật trạng thái hoạt động"))
+        UC08(("Cập nhật vị trí"))
+
+        UC09(("Tạo yêu cầu đặt xe"))
+        UC10(("Hủy yêu cầu đặt xe"))
+
+        UC11(("Tìm tài xế phù hợp"))
+        UC12(("Gửi yêu cầu nhận chuyến"))
+        UC13(("Chấp nhận chuyến"))
+        UC14(("Từ chối chuyến"))
+        UC15(("Tìm tài xế thay thế"))
+        UC16(("Thông báo không tìm được tài xế"))
+
+        UC17(("Xem thông tin tài xế"))
+        UC18(("Theo dõi chuyến đi"))
+        UC19(("Cập nhật trạng thái chuyến"))
+        UC20(("Tính thời gian dự kiến đến"))
+        UC21(("Xem lịch sử chuyến"))
+
+        UC22(("Tính cước chuyến đi"))
+        UC23(("Thanh toán tiền mặt"))
+        UC24(("Thanh toán điện tử"))
+        UC25(("Xử lý thanh toán thất bại"))
+        UC26(("Tra cứu giao dịch"))
+
+        UC27(("Gửi thông báo"))
+        UC28(("Nhận thông báo"))
+
+        UC29(("Quản lý khách hàng"))
+        UC30(("Quản lý tài xế"))
+        UC31(("Theo dõi chuyến đang diễn ra"))
+        UC32(("Theo dõi trạng thái tài xế"))
+        UC33(("Xử lý chuyến bất thường"))
+        UC34(("Tra cứu lịch sử"))
+        UC35(("Phân quyền quản trị"))
+        UC36(("Xem báo cáo hoạt động"))
+
+        UC37(("Đánh giá tài xế"))
+        UC38(("Nhận xét chuyến đi"))
+    end
+
+    KH --> UC01
+    KH --> UC02
+    KH --> UC03
+    KH --> UC04
+    KH --> UC09
+    KH --> UC10
+    KH --> UC17
+    KH --> UC18
+    KH --> UC21
+    KH --> UC23
+    KH --> UC24
+    KH --> UC25
+    KH --> UC28
+    KH --> UC37
+    KH --> UC38
+
+    TX --> UC02
+    TX --> UC03
+    TX --> UC04
+    TX --> UC05
+    TX --> UC06
+    TX --> UC07
+    TX --> UC08
+    TX --> UC13
+    TX --> UC14
+    TX --> UC19
+    TX --> UC28
+
+    NV --> UC02
+    NV --> UC29
+    NV --> UC30
+    NV --> UC31
+    NV --> UC32
+    NV --> UC33
+    NV --> UC34
+    NV --> UC35
+    NV --> UC36
+
+    PAY --> UC24
+    PAY --> UC25
+    PAY --> UC26
+
+    GPS --> UC08
+    GPS --> UC11
+    GPS --> UC20
+
+    UC09 -.->|include| UC11
+    UC11 -.->|include| UC12
+    UC12 -.->|extend| UC13
+    UC12 -.->|extend| UC14
+    UC15 -.->|include| UC11
+    UC16 -.->|extend| UC11
+
+    UC24 -.->|include| UC22
+    UC25 -.->|extend| UC24
