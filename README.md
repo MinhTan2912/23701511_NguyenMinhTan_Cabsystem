@@ -296,7 +296,6 @@ B10 Phân tích quy trình nghiệp vụ
 
 ## 8. Use Case Diagram
 
-
 ### 8.1. Actors
 
 | Actor | Vai trò |
@@ -317,72 +316,129 @@ flowchart LR
     NV["👨‍💼 Nhân viên vận hành"]
     PAY["💳 Nhà cung cấp thanh toán"]
     GPS["📍 Dịch vụ bản đồ / GPS"]
+    NOTI["🔔 Dịch vụ thông báo"]
 
-    subgraph CAB["HỆ THỐNG CAB – NỀN TẢNG ĐẶT XE"]
+    subgraph CAB["HỆ THỐNG CAB"]
 
-        UC01(("Đăng ký tài khoản"))
-        UC02(("Đăng nhập"))
-        UC03(("Đăng xuất"))
-        UC04(("Cập nhật thông tin cá nhân"))
+        %% =========================
+        %% QUẢN LÝ TÀI KHOẢN
+        %% =========================
 
-        UC05(("Quản lý hồ sơ tài xế"))
-        UC06(("Quản lý phương tiện"))
-        UC07(("Cập nhật trạng thái hoạt động"))
-        UC08(("Cập nhật vị trí"))
+        subgraph ACCOUNT["Quản lý tài khoản"]
+            UC01(("Đăng ký tài khoản"))
+            UC02(("Đăng nhập"))
+            UC03(("Cập nhật thông tin cá nhân"))
+        end
 
-        UC09(("Tạo yêu cầu đặt xe"))
-        UC10(("Hủy yêu cầu đặt xe"))
+        %% =========================
+        %% QUẢN LÝ TÀI XẾ
+        %% =========================
 
-        UC11(("Tìm tài xế phù hợp"))
-        UC12(("Gửi yêu cầu nhận chuyến"))
-        UC13(("Chấp nhận chuyến"))
-        UC14(("Từ chối chuyến"))
-        UC15(("Tìm tài xế thay thế"))
-        UC16(("Thông báo không tìm được tài xế"))
+        subgraph DRIVER["Quản lý tài xế"]
+            UC04(("Quản lý hồ sơ tài xế"))
+            UC05(("Quản lý phương tiện"))
+            UC06(("Cập nhật trạng thái hoạt động"))
+            UC07(("Cập nhật vị trí"))
+        end
 
-        UC17(("Xem thông tin tài xế"))
-        UC18(("Theo dõi chuyến đi"))
-        UC19(("Cập nhật trạng thái chuyến"))
-        UC20(("Tính thời gian dự kiến đến"))
-        UC21(("Xem lịch sử chuyến"))
+        %% =========================
+        %% ĐẶT XE
+        %% =========================
 
-        UC22(("Tính cước chuyến đi"))
-        UC23(("Thanh toán tiền mặt"))
-        UC24(("Thanh toán điện tử"))
-        UC25(("Xử lý thanh toán thất bại"))
-        UC26(("Tra cứu giao dịch"))
+        subgraph BOOKING["Quản lý đặt xe"]
+            UC08(("Tạo yêu cầu đặt xe"))
+            UC09(("Hủy yêu cầu đặt xe"))
+            UC10(("Xem lịch sử chuyến"))
+        end
 
-        UC27(("Gửi thông báo"))
-        UC28(("Nhận thông báo"))
+        %% =========================
+        %% TÌM VÀ PHÂN CÔNG TÀI XẾ
+        %% =========================
 
-        UC29(("Quản lý khách hàng"))
-        UC30(("Quản lý tài xế"))
-        UC31(("Theo dõi chuyến đang diễn ra"))
-        UC32(("Theo dõi trạng thái tài xế"))
-        UC33(("Xử lý chuyến bất thường"))
-        UC34(("Tra cứu lịch sử"))
-        UC35(("Phân quyền quản trị"))
-        UC36(("Xem báo cáo hoạt động"))
+        subgraph DISPATCH["Tìm và phân công tài xế"]
+            UC11(("Tìm tài xế phù hợp"))
+            UC12(("Gửi yêu cầu nhận chuyến"))
+            UC13(("Xử lý phản hồi tài xế"))
+            UC14(("Tìm tài xế thay thế"))
+            UC15(("Xử lý không tìm được tài xế"))
+        end
 
-        UC37(("Đánh giá tài xế"))
-        UC38(("Nhận xét chuyến đi"))
+        %% =========================
+        %% QUẢN LÝ CHUYẾN ĐI
+        %% =========================
+
+        subgraph TRIP["Quản lý chuyến đi"]
+            UC16(("Xem thông tin tài xế"))
+            UC17(("Theo dõi chuyến đi"))
+            UC18(("Cập nhật trạng thái chuyến"))
+        end
+
+        %% =========================
+        %% THANH TOÁN
+        %% =========================
+
+        subgraph PAYMENT["Tính cước và thanh toán"]
+            UC19(("Tính cước chuyến đi"))
+            UC20(("Thanh toán tiền mặt"))
+            UC21(("Thanh toán điện tử"))
+            UC22(("Thanh toán lại"))
+            UC23(("Tra cứu giao dịch"))
+        end
+
+        %% =========================
+        %% THÔNG BÁO
+        %% =========================
+
+        subgraph NOTIFICATION["Thông báo"]
+            UC24(("Gửi thông báo"))
+        end
+
+        %% =========================
+        %% VẬN HÀNH
+        %% =========================
+
+        subgraph OPERATION["Quản lý vận hành"]
+            UC25(("Quản lý khách hàng"))
+            UC26(("Quản lý tài xế"))
+            UC27(("Theo dõi chuyến đang diễn ra"))
+            UC28(("Theo dõi trạng thái tài xế"))
+            UC29(("Xử lý chuyến bất thường"))
+            UC30(("Xem báo cáo"))
+        end
+
+        %% =========================
+        %% ĐÁNH GIÁ
+        %% =========================
+
+        subgraph RATING["Đánh giá"]
+            UC31(("Đánh giá tài xế"))
+            UC32(("Nhận xét chuyến đi"))
+        end
     end
+
+
+    %% =========================
+    %% KHÁCH HÀNG
+    %% =========================
 
     KH --> UC01
     KH --> UC02
     KH --> UC03
-    KH --> UC04
+    KH --> UC08
     KH --> UC09
     KH --> UC10
+    KH --> UC16
     KH --> UC17
-    KH --> UC18
+    KH --> UC20
     KH --> UC21
-    KH --> UC23
-    KH --> UC24
-    KH --> UC25
-    KH --> UC28
-    KH --> UC37
-    KH --> UC38
+    KH --> UC22
+    KH --> UC31
+    KH --> UC32
+
+
+    %% =========================
+    %% TÀI XẾ
+    %% =========================
 
     TX --> UC02
     TX --> UC03
@@ -390,36 +446,212 @@ flowchart LR
     TX --> UC05
     TX --> UC06
     TX --> UC07
-    TX --> UC08
     TX --> UC13
-    TX --> UC14
-    TX --> UC19
-    TX --> UC28
+    TX --> UC18
+
+
+    %% =========================
+    %% NHÂN VIÊN VẬN HÀNH
+    %% =========================
 
     NV --> UC02
+    NV --> UC25
+    NV --> UC26
+    NV --> UC27
+    NV --> UC28
     NV --> UC29
+    NV --> UC23
     NV --> UC30
-    NV --> UC31
-    NV --> UC32
-    NV --> UC33
-    NV --> UC34
-    NV --> UC35
-    NV --> UC36
 
-    PAY --> UC24
-    PAY --> UC25
-    PAY --> UC26
 
-    GPS --> UC08
+    %% =========================
+    %% HỆ THỐNG THANH TOÁN
+    %% =========================
+
+    PAY --> UC21
+    PAY --> UC22
+    PAY --> UC23
+
+
+    %% =========================
+    %% GPS / MAP
+    %% =========================
+
     GPS --> UC11
-    GPS --> UC20
+    GPS --> UC17
 
-    UC09 -.->|include| UC11
+
+    %% =========================
+    %% DỊCH VỤ THÔNG BÁO
+    %% =========================
+
+    NOTI --> UC24
+
+
+    %% =========================
+    %% USE CASE RELATIONSHIPS
+    %% =========================
+
+    %% Đặt xe -> tìm tài xế
+    UC08 -.->|include| UC11
+
+    %% Tìm tài xế -> gửi yêu cầu
     UC11 -.->|include| UC12
-    UC12 -.->|extend| UC13
-    UC12 -.->|extend| UC14
-    UC15 -.->|include| UC11
-    UC16 -.->|extend| UC11
 
-    UC24 -.->|include| UC22
-    UC25 -.->|extend| UC24
+    %% Gửi yêu cầu -> xử lý phản hồi
+    UC12 -.->|include| UC13
+
+    %% Tài xế từ chối / không phản hồi
+    UC14 -.->|extend| UC13
+
+    %% Không còn tài xế phù hợp
+    UC15 -.->|extend| UC11
+
+    %% Thanh toán
+    UC20 -.->|include| UC19
+    UC21 -.->|include| UC19
+
+    %% Thanh toán thất bại
+    UC22 -.->|extend| UC21
+
+    %% Cập nhật trạng thái -> thông báo
+    UC18 -.->|include| UC24
+
+    %% Thông báo nhận chuyến
+    UC13 -.->|include| UC24
+
+    %% Thông báo đặt xe
+    UC08 -.->|include| UC24
+
+    %% Thông báo thanh toán
+    UC20 -.->|include| UC24
+    UC21 -.->|include| UC24
+```
+
+## B9. Đặc tả Use Case
+
+## UC01 – Đăng ký tài khoản
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Đăng ký tài khoản |
+| **Mô tả sơ lược** | Cho phép khách hàng tạo tài khoản để sử dụng hệ thống CAB. |
+| **Actor chính** | Khách hàng |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng chưa có tài khoản. |
+| **Hậu điều kiện (Post-condition)** | Tài khoản được tạo thành công và khách hàng có thể đăng nhập. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Đăng ký". | 2. Hiển thị form đăng ký. |
+| 3. Nhập thông tin đăng ký. | 4. Kiểm tra thông tin đăng ký. |
+| 5. Xác nhận đăng ký. | 6. Kiểm tra thông tin hợp lệ. |
+| | 7. Tạo tài khoản. |
+| | 8. Lưu thông tin tài khoản. |
+| | 9. Thông báo đăng ký thành công. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Thông tin nhập chưa đầy đủ. | 3.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 3). |
+| 4.1. Email/số điện thoại đã tồn tại. | 4.2. Thông báo tài khoản đã tồn tại (quay lại bước 3). |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 7.1. Lỗi tạo tài khoản. | 7.2. Thông báo không thể tạo tài khoản và giữ lại thông tin đã nhập. |
+
+## UC02 – Đăng nhập
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Đăng nhập |
+| **Mô tả sơ lược** | Cho phép người dùng đăng nhập vào hệ thống CAB để sử dụng các chức năng theo quyền được cấp. |
+| **Actor chính** | Khách hàng / Tài xế / Nhân viên vận hành |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Người dùng đã có tài khoản hợp lệ. |
+| **Hậu điều kiện (Post-condition)** | Người dùng đăng nhập thành công và được truy cập các chức năng theo vai trò. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Đăng nhập". | 2. Hiển thị form đăng nhập. |
+| 3. Nhập email/số điện thoại và mật khẩu. | 4. Kiểm tra thông tin đăng nhập. |
+| | 5. Xác thực tài khoản. |
+| | 6. Xác định vai trò của người dùng. |
+| | 7. Tạo phiên đăng nhập. |
+| | 8. Chuyển người dùng đến giao diện tương ứng. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Người dùng nhập sai thông tin đăng nhập. | 3.2. Thông báo thông tin không chính xác và yêu cầu nhập lại. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 5.1. Tài khoản bị khóa hoặc không hoạt động. | 5.2. Thông báo tài khoản không thể đăng nhập. |
+| 5.3. Hệ thống xảy ra lỗi. | 5.4. Thông báo đăng nhập thất bại. |
+
+## UC03 – Đặt xe
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Đặt xe |
+| **Mô tả sơ lược** | Cho phép khách hàng nhập điểm đón, điểm đến và loại xe để tạo yêu cầu đặt xe. |
+| **Actor chính** | Khách hàng |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập vào hệ thống. |
+| **Hậu điều kiện (Post-condition)** | Yêu cầu đặt xe được tạo thành công và chuyển sang quá trình tìm tài xế. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Đặt xe". | 2. Hiển thị giao diện đặt xe. |
+| 3. Nhập điểm đón và điểm đến. | 4. Kiểm tra thông tin điểm đón và điểm đến. |
+| 5. Chọn loại xe. | 6. Hiển thị thông tin loại xe đã chọn. |
+| 7. Xác nhận đặt xe. | 8. Kiểm tra thông tin yêu cầu. |
+| | 9. Tạo mã chuyến đi. |
+| | 10. Lưu thông tin yêu cầu đặt xe. |
+| | 11. Chuyển yêu cầu sang chức năng tìm tài xế. |
+| | 12. Thông báo yêu cầu đặt xe đã được tiếp nhận. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Điểm đón hoặc điểm đến không hợp lệ. | 3.2. Thông báo yêu cầu nhập lại thông tin. |
+| 5.1. Loại xe không khả dụng. | 5.2. Thông báo và yêu cầu chọn loại xe khác. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 10.1. Lỗi tạo yêu cầu đặt xe. | 10.2. Thông báo không thể tạo yêu cầu và yêu cầu thực hiện lại. |
+
+## UC04 – Tìm và phân công tài xế
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Tìm và phân công tài xế |
+| **Mô tả sơ lược** | Hệ thống tự động tìm tài xế phù hợp với yêu cầu đặt xe và phân công tài xế cho chuyến đi. |
+| **Actor chính** | Hệ thống CAB |
+| **Actor phụ** | Tài xế / Dịch vụ bản đồ GPS |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã tạo yêu cầu đặt xe thành công. |
+| **Hậu điều kiện (Post-condition)** | Tài xế phù hợp được phân công hoặc khách hàng được thông báo không tìm được tài xế. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| | 1. Nhận yêu cầu tìm tài xế. |
+| | 2. Xác định vị trí điểm đón. |
+| | 3. Lấy danh sách tài xế đang sẵn sàng. |
+| | 4. Kiểm tra loại phương tiện phù hợp. |
+| | 5. Tính khoảng cách giữa tài xế và điểm đón. |
+| | 6. Xếp thứ tự tài xế phù hợp. |
+| | 7. Gửi yêu cầu nhận chuyến cho tài xế. |
+| 8. Nhận thông báo chuyến mới. | 9. Chờ phản hồi của tài xế. |
+| 10. Chấp nhận chuyến. | 11. Gán tài xế cho chuyến. |
+| | 12. Cập nhật trạng thái chuyến. |
+| | 13. Thông báo tài xế đã nhận chuyến cho khách hàng. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 10.1. Tài xế từ chối chuyến. | 10.2. Chuyển sang tài xế phù hợp tiếp theo. |
+| 10.3. Tài xế không phản hồi trong thời gian quy định. | 10.4. Chuyển sang tài xế phù hợp tiếp theo. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 7.1. Không có tài xế phù hợp. | 7.2. Thông báo cho khách hàng không tìm được tài xế. |
+
+## UC05 – Nhận hoặc từ chối chuyến
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Nhận hoặc từ chối chuyến |
+| **Mô tả sơ lược** | Cho phép tài xế xem thông tin và quyết định nhận hoặc từ chối yêu cầu chuyến. |
+| **Actor chính** | Tài xế |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đang ở trạng thái sẵn sàng và nhận được yêu cầu chuyến. |
+| **Hậu điều kiện (Post-condition)** | Chuyến được tài xế nhận hoặc hệ thống tiếp tục tìm tài xế khác. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Nhận thông báo chuyến mới. | 2. Hiển thị thông tin chuyến. |
+| 3. Xem thông tin điểm đón, điểm đến và loại xe. | 4. Hiển thị thời gian phản hồi. |
+| 5. Chọn "Nhận chuyến". | 6. Kiểm tra chuyến còn khả dụng. |
+| | 7. Xác nhận tài xế nhận chuyến. |
+| | 8. Cập nhật trạng thái chuyến. |
+| | 9. Thông báo cho khách hàng. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 5.1. Chọn "Từ chối chuyến". | 5.2. Ghi nhận tài xế từ chối và tiếp tục tìm tài xế khác. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 6.1. Chuyến đã được tài xế khác nhận. | 6.2. Thông báo chuyến không còn khả dụng. |
