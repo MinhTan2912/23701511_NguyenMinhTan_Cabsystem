@@ -1106,3 +1106,27 @@ flowchart TD
     L --> M[Thông báo đánh giá thành công]
     M --> N([Kết thúc])
 ```
+## 10. Phân tích quy tắc nghiệp vụ (Business Rules)
+
+| ID Rule | ID | Tên Business Rule | Đối tượng áp dụng | Phân tích quy tắc nghiệp vụ |
+|---|---|---|---|---|
+| **RULE-01** | **UC01** | Đăng ký tài khoản | Khách hàng | Khách hàng phải cung cấp đầy đủ và chính xác thông tin bắt buộc. Hệ thống kiểm tra thông tin trước khi tạo tài khoản và không cho phép đăng ký nếu thông tin không hợp lệ hoặc đã tồn tại. |
+| **RULE-02** | **UC02** | Xác thực người dùng | Tất cả người dùng | Người dùng phải cung cấp thông tin đăng nhập hợp lệ để truy cập hệ thống. Hệ thống chỉ cho phép sử dụng các chức năng yêu cầu tài khoản sau khi xác thực thành công. |
+| **RULE-03** | **UC02** | Phân quyền người dùng | Tất cả người dùng | Sau khi đăng nhập, hệ thống xác định vai trò của người dùng và chỉ cho phép truy cập các chức năng tương ứng với quyền được cấp. |
+| **RULE-04** | **UC03** | Quản lý thông tin cá nhân | Khách hàng, Tài xế | Người dùng chỉ được cập nhật các thông tin cá nhân thuộc quyền quản lý. Hệ thống phải kiểm tra dữ liệu trước khi lưu thông tin thay đổi. |
+| **RULE-05** | **UC04** | Thông tin đặt xe | Khách hàng | Khi đặt xe, khách hàng phải cung cấp điểm đón, điểm đến và loại xe/dịch vụ. Hệ thống kiểm tra tính hợp lệ của thông tin trước khi tiếp nhận yêu cầu. |
+| **RULE-06** | **UC04** | Tạo yêu cầu đặt xe | Hệ thống CAB | Chỉ yêu cầu đặt xe hợp lệ mới được tạo thành chuyến. Sau khi tạo, hệ thống lưu thông tin chuyến và chuyển sang quá trình tìm tài xế. |
+| **RULE-07** | **UC04** | Hủy yêu cầu đặt xe | Khách hàng | Khách hàng chỉ được hủy yêu cầu khi trạng thái chuyến cho phép. Việc hủy chuyến phải tuân theo chính sách hủy của doanh nghiệp. |
+| **RULE-08** | **UC05** | Điều kiện tìm tài xế | Hệ thống CAB | Hệ thống chỉ lựa chọn các tài xế đang sẵn sàng, có vị trí phù hợp và phương tiện đáp ứng loại xe mà khách hàng yêu cầu. |
+| **RULE-09** | **UC05** | Ưu tiên tài xế | Hệ thống CAB | Khi có nhiều tài xế phù hợp, hệ thống ưu tiên tài xế phù hợp và gần điểm đón theo các tiêu chí vận hành được doanh nghiệp quy định. |
+| **RULE-10** | **UC05** | Tài xế nhận hoặc từ chối chuyến | Tài xế | Tài xế có quyền chấp nhận hoặc từ chối yêu cầu chuyến. Khi tài xế chấp nhận, hệ thống gán tài xế cho chuyến và cập nhật trạng thái chuyến. |
+| **RULE-11** | **UC05** | Tìm tài xế thay thế | Hệ thống CAB | Nếu tài xế từ chối hoặc không phản hồi trong thời gian quy định, hệ thống tiếp tục tìm tài xế khác mà không yêu cầu khách hàng tạo lại chuyến. |
+| **RULE-12** | **UC06** | Cập nhật trạng thái chuyến | Tài xế, Hệ thống CAB | Trạng thái chuyến phải được cập nhật theo đúng trình tự nghiệp vụ: tìm tài xế → nhận chuyến → đến điểm đón → đón khách → đang di chuyển → hoàn thành. |
+| **RULE-13** | **UC06** | Theo dõi vị trí tài xế | Tài xế, Khách hàng | Hệ thống sử dụng vị trí của tài xế đang hoạt động để hỗ trợ tìm tài xế và cung cấp thông tin theo dõi chuyến cho khách hàng. |
+| **RULE-14** | **UC07** | Tính cước chuyến đi | Hệ thống CAB | Sau khi chuyến hoàn thành, hệ thống xác định số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi theo chính sách tính cước của doanh nghiệp. |
+| **RULE-15** | **UC07** | Thanh toán điện tử | Khách hàng, Nhà cung cấp thanh toán | Thanh toán điện tử phải được xử lý thông qua nhà cung cấp thanh toán bên ngoài. Hệ thống CAB không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán. |
+| **RULE-16** | **UC07** | Thanh toán thất bại | Khách hàng, Hệ thống CAB | Khi giao dịch thanh toán thất bại, hệ thống phải thông báo cho khách hàng và cho phép thực hiện lại theo chính sách của doanh nghiệp. |
+| **RULE-17** | **UC08** | Gửi thông báo | Khách hàng, Tài xế | Hệ thống phải gửi thông báo khi có các sự kiện quan trọng như tiếp nhận yêu cầu, nhận chuyến, thay đổi trạng thái, hoàn thành chuyến và kết quả thanh toán. |
+| **RULE-18** | **UC09** | Đánh giá tài xế | Khách hàng | Khách hàng chỉ được đánh giá tài xế sau khi chuyến đi hoàn thành. Kết quả đánh giá phải được lưu gắn với chuyến đi và tài xế. |
+| **RULE-19** | **UC10** | Quản lý vận hành | Nhân viên vận hành | Nhân viên vận hành được phép theo dõi chuyến, trạng thái tài xế, tra cứu lịch sử và xử lý các trường hợp chuyến đi bất thường theo quyền được cấp. |
+| **RULE-20** | **UC10** | Bảo mật và nhật ký hoạt động | Nhân viên vận hành, Quản trị viên | Các thao tác quản trị quan trọng phải được kiểm soát quyền truy cập và ghi nhận vào nhật ký hệ thống để phục vụ kiểm tra khi có sự cố. |
