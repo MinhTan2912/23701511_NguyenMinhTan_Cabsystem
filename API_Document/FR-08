@@ -1,0 +1,106 @@
+openapi: 3.0.1
+
+info:
+  title: Vị trí tài xế
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR08 - Vị trí tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /drivers/location:
+    put:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR08 - Cập nhật vị trí tài xế
+
+      description: >
+        Hệ thống nhận và cập nhật vị trí hiện tại của tài xế.
+        Vị trí được sử dụng để phục vụ quá trình tìm kiếm và phân công chuyến.
+
+      operationId: FR08_UpdateDriverLocation
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              latitude: 10.7769
+              longitude: 106.7009
+              accuracy: 5
+              recordedAt: "2026-09-07T19:30:00+07:00"
+
+      responses:
+
+        '200':
+          description: Cập nhật vị trí tài xế thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật vị trí tài xế thành công"
+                data:
+                  driverId: "drv_1001"
+                  latitude: 10.7769
+                  longitude: 106.7009
+                  accuracy: 5
+                  recordedAt: "2026-09-07T19:30:00+07:00"
+                  locationStatus: "ACTIVE"
+
+        '400':
+          description: Dữ liệu vị trí không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_LOCATION_DATA"
+                message: "Thông tin vị trí không hợp lệ. Vui lòng kiểm tra lại kinh độ và vĩ độ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền cập nhật vị trí tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật vị trí tài xế"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
