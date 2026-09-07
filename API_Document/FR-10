@@ -1,0 +1,131 @@
+openapi: 3.0.1
+
+info:
+  title: Điểm đón/điểm đến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR10 - Điểm đón/điểm đến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /bookings/validate-locations:
+    post:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR10 - Kiểm tra điểm đón và điểm đến
+
+      description: >
+        Hệ thống cho phép khách hàng nhập điểm đón và điểm đến,
+        đồng thời kiểm tra tính hợp lệ của thông tin trước khi tạo yêu cầu đặt xe.
+
+      operationId: FR10_ValidateBookingLocations
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              pickupLocation:
+                address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                latitude: 10.7688
+                longitude: 106.6866
+
+              dropoffLocation:
+                address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                latitude: 10.8014
+                longitude: 106.7108
+
+      responses:
+
+        '200':
+          description: Điểm đón và điểm đến hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Điểm đón và điểm đến hợp lệ"
+
+                data:
+                  pickupLocation:
+                    address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                    latitude: 10.7688
+                    longitude: 106.6866
+                    valid: true
+
+                  dropoffLocation:
+                    address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                    latitude: 10.8014
+                    longitude: 106.7108
+                    valid: true
+
+                  routeAvailable: true
+                  readyForBooking: true
+
+
+        '400':
+          description: Điểm đón hoặc điểm đến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_LOCATION"
+                message: "Điểm đón hoặc điểm đến không hợp lệ. Vui lòng kiểm tra lại thông tin"
+
+
+        '401':
+          description: Khách hàng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '422':
+          description: Không thể xác định tuyến đường giữa điểm đón và điểm đến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 422
+                errorCode: "ROUTE_NOT_AVAILABLE"
+                message: "Không thể xác định tuyến đường giữa điểm đón và điểm đến"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình kiểm tra. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
