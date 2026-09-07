@@ -1,0 +1,138 @@
+openapi: 3.0.1
+
+info:
+  title: Tạo yêu cầu đặt xe
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR09 - Tạo yêu cầu đặt xe
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /bookings:
+    post:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR09 - Tạo yêu cầu đặt xe
+
+      description: >
+        Hệ thống cho phép khách hàng tạo yêu cầu đặt xe bằng cách cung cấp
+        thông tin điểm đón, điểm đến và loại phương tiện mong muốn.
+
+      operationId: FR09_CreateRideBooking
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              pickupLocation:
+                address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                latitude: 10.7688
+                longitude: 106.6866
+
+              dropoffLocation:
+                address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                latitude: 10.8014
+                longitude: 106.7108
+
+              vehicleType: "CAR"
+              note: "Đón tại cổng chính"
+              paymentMethod: "CASH"
+
+      responses:
+
+        '201':
+          description: Tạo yêu cầu đặt xe thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Tạo yêu cầu đặt xe thành công"
+
+                data:
+                  bookingId: "booking_1001"
+                  customerId: "usr_1001"
+
+                  pickupLocation:
+                    address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                    latitude: 10.7688
+                    longitude: 106.6866
+
+                  dropoffLocation:
+                    address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                    latitude: 10.8014
+                    longitude: 106.7108
+
+                  vehicleType: "CAR"
+                  paymentMethod: "CASH"
+                  status: "SEARCHING_DRIVER"
+                  createdAt: "2026-09-07T19:30:00+07:00"
+
+
+        '400':
+          description: Thông tin yêu cầu đặt xe không hợp lệ hoặc thiếu dữ liệu bắt buộc
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_BOOKING_DATA"
+                message: "Thông tin đặt xe không hợp lệ. Vui lòng kiểm tra điểm đón và điểm đến"
+
+
+        '401':
+          description: Khách hàng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '409':
+          description: Khách hàng đang có yêu cầu đặt xe chưa hoàn tất
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "ACTIVE_BOOKING_EXISTS"
+                message: "Bạn đang có một yêu cầu đặt xe chưa hoàn tất"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
