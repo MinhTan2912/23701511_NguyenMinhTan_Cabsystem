@@ -1,0 +1,149 @@
+openapi: 3.0.1
+
+info:
+  title: Gửi yêu cầu nhận chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR16 - Gửi yêu cầu nhận chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/send-request:
+    post:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR16 - Gửi yêu cầu nhận chuyến
+
+      description: >
+        Hệ thống gửi yêu cầu nhận chuyến đến tài xế được lựa chọn,
+        bao gồm thông tin điểm đón, điểm đến, loại xe và các thông tin
+        cần thiết để tài xế xem xét và phản hồi yêu cầu.
+
+      operationId: FR16_SendTripRequestToDriver
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              tripCode: "CAB-20260907-1001"
+              driverId: "drv_1001"
+
+              pickupLocation:
+                address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                latitude: 10.7688
+                longitude: 106.6866
+
+              dropoffLocation:
+                address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                latitude: 10.8014
+                longitude: 106.7108
+
+              vehicleType: "CAR"
+              estimatedDistance: 5.8
+              estimatedDuration: 25
+              estimatedFare: 85000
+              paymentMethod: "CASH"
+
+              requestExpiresAt: "2026-09-07T19:45:00+07:00"
+
+      responses:
+
+        '201':
+          description: Gửi yêu cầu nhận chuyến đến tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Đã gửi yêu cầu nhận chuyến đến tài xế"
+
+                data:
+                  requestId: "req_1001"
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  driverId: "drv_1001"
+                  requestStatus: "PENDING"
+                  sentAt: "2026-09-07T19:40:00+07:00"
+                  expiresAt: "2026-09-07T19:45:00+07:00"
+
+
+        '400':
+          description: Thông tin yêu cầu nhận chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_REQUEST"
+                message: "Thông tin yêu cầu nhận chuyến không hợp lệ"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy chuyến hoặc tài xế được lựa chọn
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "DRIVER_OR_BOOKING_NOT_FOUND"
+                message: "Không tìm thấy tài xế hoặc yêu cầu đặt xe"
+
+
+        '409':
+          description: Tài xế không còn sẵn sàng hoặc đã nhận chuyến khác
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_UNAVAILABLE"
+                message: "Tài xế không còn sẵn sàng để nhận chuyến"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi gửi yêu cầu nhận chuyến. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của hệ thống hoặc nhân viên có quyền phân công tài xế
