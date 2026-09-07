@@ -1,0 +1,142 @@
+openapi: 3.0.1
+
+info:
+  title: Hủy yêu cầu
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR13 - Hủy yêu cầu
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /bookings/cancel:
+    put:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR13 - Hủy yêu cầu đặt xe
+
+      description: >
+        Hệ thống cho phép khách hàng hủy yêu cầu đặt xe
+        khi trạng thái yêu cầu và chính sách hủy của hệ thống cho phép.
+
+      operationId: FR13_CancelBooking
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              cancellationReason: "Không còn nhu cầu đặt xe"
+              cancelledAt: "2026-09-07T19:50:00+07:00"
+
+      responses:
+
+        '200':
+          description: Hủy yêu cầu đặt xe thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Hủy yêu cầu đặt xe thành công"
+
+                data:
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  previousStatus: "SEARCHING_DRIVER"
+                  currentStatus: "CANCELLED"
+                  cancellationReason: "Không còn nhu cầu đặt xe"
+                  cancellationFee: 0
+                  cancelledAt: "2026-09-07T19:50:00+07:00"
+
+
+        '400':
+          description: Thông tin hủy yêu cầu không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_CANCELLATION_DATA"
+                message: "Thông tin hủy yêu cầu không hợp lệ"
+
+
+        '401':
+          description: Khách hàng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Khách hàng không có quyền hủy yêu cầu này
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền hủy yêu cầu đặt xe này"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe"
+
+
+        '409':
+          description: Không thể hủy yêu cầu do trạng thái hoặc chính sách hủy
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "CANCELLATION_NOT_ALLOWED"
+                message: "Không thể hủy yêu cầu ở trạng thái hiện tại hoặc đã vượt quá thời gian cho phép hủy"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
