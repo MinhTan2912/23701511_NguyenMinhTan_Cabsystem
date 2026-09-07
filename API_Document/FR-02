@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: API Specification - FR02
+  title: API Xác thực tài khoản
   description: OpenAPI Spec cho Yêu cầu Chức năng FR02 (Xác thực tài khoản - Đăng nhập & Đăng xuất trong 1 API)
   version: 1.0.0
 servers:
