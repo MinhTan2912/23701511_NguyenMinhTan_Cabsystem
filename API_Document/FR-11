@@ -1,0 +1,202 @@
+openapi: 3.0.1
+
+info:
+  title: Lựa chọn loại xe
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR11 - Lựa chọn loại xe
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /vehicle-services:
+    get:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR11 - Hiển thị các loại xe/dịch vụ
+
+      description: >
+        Hệ thống hiển thị danh sách các loại xe và dịch vụ được hỗ trợ
+        để khách hàng lựa chọn khi đặt xe.
+
+      operationId: FR11_GetVehicleServices
+
+      security:
+        - bearerAuth: []
+
+      responses:
+
+        '200':
+          description: Lấy danh sách loại xe/dịch vụ thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lấy danh sách loại xe/dịch vụ thành công"
+
+                data:
+                  services:
+                    - serviceId: "svc_car"
+                      serviceName: "CAB Car"
+                      vehicleType: "CAR"
+                      description: "Dịch vụ xe ô tô"
+                      available: true
+
+                    - serviceId: "svc_motorbike"
+                      serviceName: "CAB Bike"
+                      vehicleType: "MOTORBIKE"
+                      description: "Dịch vụ xe máy"
+                      available: true
+
+                    - serviceId: "svc_premium"
+                      serviceName: "CAB Premium"
+                      vehicleType: "PREMIUM"
+                      description: "Dịch vụ xe cao cấp"
+                      available: true
+
+
+        '401':
+          description: Khách hàng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+  /bookings/select-service:
+    post:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR11 - Lựa chọn loại xe/dịch vụ
+
+      description: >
+        Hệ thống cho phép khách hàng lựa chọn loại xe hoặc dịch vụ
+        từ danh sách các loại xe được hỗ trợ.
+
+      operationId: FR11_SelectVehicleService
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              serviceId: "svc_car"
+              vehicleType: "CAR"
+
+      responses:
+
+        '200':
+          description: Lựa chọn loại xe/dịch vụ thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lựa chọn loại xe/dịch vụ thành công"
+
+                data:
+                  bookingId: "booking_1001"
+                  serviceId: "svc_car"
+                  serviceName: "CAB Car"
+                  vehicleType: "CAR"
+                  selectionStatus: "SELECTED"
+                  updatedAt: "2026-09-07T19:35:00+07:00"
+
+
+        '400':
+          description: Thông tin lựa chọn không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_SERVICE_SELECTION"
+                message: "Thông tin loại xe hoặc dịch vụ không hợp lệ"
+
+
+        '401':
+          description: Khách hàng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Loại xe hoặc dịch vụ không tồn tại
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "SERVICE_NOT_FOUND"
+                message: "Loại xe hoặc dịch vụ không tồn tại"
+
+
+        '409':
+          description: Loại xe/dịch vụ hiện không khả dụng
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "SERVICE_UNAVAILABLE"
+                message: "Loại xe/dịch vụ hiện không khả dụng"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
