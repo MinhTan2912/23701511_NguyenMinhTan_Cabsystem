@@ -1,0 +1,235 @@
+openapi: 3.0.1
+
+info:
+  title: Theo dõi chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR21 - Theo dõi chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/status:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR21 - Xem trạng thái hiện tại của chuyến
+
+      description: >
+        Hệ thống cho phép khách hàng xem trạng thái hiện tại
+        của chuyến đi dựa trên mã đặt xe.
+
+      operationId: FR21_ViewTripStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+
+      responses:
+
+        '200':
+          description: Lấy trạng thái chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lấy trạng thái chuyến thành công"
+                data:
+                  bookingId: "BK202609070001"
+                  tripCode: "TRIP202609070001"
+                  currentStatus: "DRIVER_ARRIVING"
+                  statusDescription: "Tài xế đang đến điểm đón"
+                  driverId: "DRV1001"
+                  updatedAt: "2026-09-07T19:35:00+07:00"
+
+        '400':
+          description: Thông tin yêu cầu không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_REQUEST"
+                message: "Thông tin yêu cầu không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền xem chuyến đi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền xem trạng thái của chuyến này"
+
+        '404':
+          description: Không tìm thấy chuyến đi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+  /trips/status/update:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR21 - Cập nhật trạng thái chuyến
+
+      description: >
+        Hệ thống cập nhật trạng thái hiện tại của chuyến đi
+        trong quá trình tài xế thực hiện chuyến.
+
+      operationId: FR21_UpdateTripStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+              driverId: "DRV1001"
+              status: "DRIVER_ARRIVING"
+              updatedAt: "2026-09-07T19:35:00+07:00"
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật trạng thái chuyến thành công"
+                data:
+                  bookingId: "BK202609070001"
+                  tripCode: "TRIP202609070001"
+                  previousStatus: "DRIVER_ASSIGNED"
+                  currentStatus: "DRIVER_ARRIVING"
+                  statusDescription: "Tài xế đang đến điểm đón"
+                  updatedBy: "DRV1001"
+                  updatedAt: "2026-09-07T19:35:00+07:00"
+
+        '400':
+          description: Trạng thái chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_STATUS"
+                message: "Trạng thái chuyến không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền cập nhật trạng thái chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật trạng thái chuyến"
+
+        '404':
+          description: Không tìm thấy chuyến đi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi"
+
+        '409':
+          description: Trạng thái chuyến không thể chuyển đổi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "INVALID_STATUS_TRANSITION"
+                message: "Không thể chuyển sang trạng thái mới từ trạng thái hiện tại"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
