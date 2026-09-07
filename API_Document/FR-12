@@ -1,0 +1,260 @@
+openapi: 3.0.1
+
+info:
+  title: Quản lý yêu cầu
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR12 - Quản lý yêu cầu
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /bookings/manage:
+    post:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR12 - Tạo mã chuyến và lưu yêu cầu
+
+      description: >
+        Hệ thống tạo mã chuyến, lưu thông tin yêu cầu đặt xe
+        và khởi tạo trạng thái của yêu cầu để tiếp tục xử lý.
+
+      operationId: FR12_CreateAndSaveBooking
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              customerId: "usr_1001"
+              pickupLocation:
+                address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                latitude: 10.7688
+                longitude: 106.6866
+
+              dropoffLocation:
+                address: "456 Dien Bien Phu, Binh Thanh, TP.HCM"
+                latitude: 10.8014
+                longitude: 106.7108
+
+              serviceId: "svc_car"
+              vehicleType: "CAR"
+              paymentMethod: "CASH"
+
+      responses:
+
+        '201':
+          description: Tạo mã chuyến và lưu yêu cầu thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Tạo yêu cầu đặt xe thành công"
+
+                data:
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  customerId: "usr_1001"
+                  serviceId: "svc_car"
+                  vehicleType: "CAR"
+                  status: "SEARCHING_DRIVER"
+                  createdAt: "2026-09-07T19:40:00+07:00"
+
+
+        '400':
+          description: Thông tin yêu cầu không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_BOOKING_DATA"
+                message: "Thông tin yêu cầu đặt xe không hợp lệ"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy khách hàng hoặc dịch vụ được yêu cầu
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "RESOURCE_NOT_FOUND"
+                message: "Không tìm thấy thông tin khách hàng hoặc dịch vụ"
+
+
+        '409':
+          description: Yêu cầu không thể được tạo do xung đột dữ liệu
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "BOOKING_CONFLICT"
+                message: "Yêu cầu đặt xe không thể được tạo do dữ liệu bị xung đột"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+  /bookings/status:
+    put:
+      tags:
+        - 7.3 Quản lý đặt xe
+
+      summary: FR12 - Cập nhật trạng thái yêu cầu
+
+      description: >
+        Hệ thống cập nhật trạng thái của yêu cầu đặt xe trong quá trình xử lý,
+        ví dụ từ đang tìm tài xế sang đã nhận chuyến, đang thực hiện,
+        hoàn thành hoặc đã hủy.
+
+      operationId: FR12_UpdateBookingStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              status: "DRIVER_ASSIGNED"
+              updatedAt: "2026-09-07T19:42:00+07:00"
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái yêu cầu thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật trạng thái yêu cầu thành công"
+
+                data:
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  previousStatus: "SEARCHING_DRIVER"
+                  currentStatus: "DRIVER_ASSIGNED"
+                  updatedAt: "2026-09-07T19:42:00+07:00"
+
+
+        '400':
+          description: Trạng thái hoặc thông tin cập nhật không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_STATUS"
+                message: "Trạng thái yêu cầu không hợp lệ"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Người dùng không có quyền cập nhật trạng thái yêu cầu
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật trạng thái yêu cầu"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe"
+
+
+        '409':
+          description: Không thể chuyển sang trạng thái mới
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "INVALID_STATUS_TRANSITION"
+                message: "Không thể chuyển yêu cầu sang trạng thái mới"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng hoặc nhân viên có quyền xử lý yêu cầu
