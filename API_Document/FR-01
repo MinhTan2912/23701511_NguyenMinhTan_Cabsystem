@@ -1,1 +1,158 @@
+openapi: 3.0.1
+info:
+  title: API Specification - FR01
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR01 (Đăng ký tài khoản)
+  version: 1.0.0
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
 
+paths:
+  /auth/register:
+    post:
+      tags:
+        - 7.1 Quản lý tài khoản
+      summary: FR01 – Đăng ký tài khoản
+      description: Hệ thống cho phép người dùng nhập thông tin cần thiết để đăng ký tài khoản, kiểm tra tính hợp lệ và đảm bảo tài khoản không bị trùng.
+      operationId: FR01_RegisterAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - password
+                - fullName
+                - role
+              properties:
+                phone:
+                  type: string
+                  description: Số điện thoại đăng ký (được sử dụng làm tên tài khoản chính)
+                  example: "0901234567"
+                email:
+                  type: string
+                  format: email
+                  description: Địa chỉ email của người dùng
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  description: Mật khẩu (tối thiểu 8 ký tự, bao gồm chữ hoa, chữ thường và số/ký tự đặc biệt)
+                  example: "Password123!"
+                fullName:
+                  type: string
+                  description: Họ và tên đầy đủ của người dùng
+                  example: "Nguyen Van A"
+                role:
+                  type: string
+                  enum:
+                    - CUSTOMER
+                    - DRIVER
+                  description: Vai trò đăng ký (Khách hàng hoặc Tài xế)
+                  example: "CUSTOMER"
+      responses:
+        '201':
+          description: Đăng ký tài khoản thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Đăng ký tài khoản thành công"
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        example: "usr_1001"
+                      phone:
+                        type: string
+                        example: "0901234567"
+                      fullName:
+                        type: string
+                        example: "Nguyen Van A"
+                      role:
+                        type: string
+                        example: "CUSTOMER"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2026-09-07T12:00:00Z"
+        '400':
+          description: Dữ liệu gửi lên không hợp lệ (Sai định dạng SĐT, mật khẩu yếu,...)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: integer
+                    example: 400
+                  errorCode:
+                    type: string
+                    example: "INVALID_INPUT_DATA"
+                  message:
+                    type: string
+                    example: "Dữ liệu đầu vào không hợp lệ"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "phone"
+                        message:
+                          type: string
+                          example: "Số điện thoại không đúng định dạng"
+        '409':
+          description: Tài khoản đã tồn tại (Trùng SĐT hoặc Email)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: integer
+                    example: 409
+                  errorCode:
+                    type: string
+                    example: "ACCOUNT_ALREADY_EXISTS"
+                  message:
+                    type: string
+                    example: "Số điện thoại hoặc Email này đã được sử dụng trên hệ thống."
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: integer
+                    example: 500
+                  errorCode:
+                    type: string
+                    example: "INTERNAL_SERVER_ERROR"
+                  message:
+                    type: string
+                    example: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
