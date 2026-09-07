@@ -1,7 +1,7 @@
 openapi: 3.0.1
 
 info:
-  title: API Specification - FR05
+  title: API Quản lý tài xế
   description: API cho Yêu cầu Chức năng FR05 - Quản lý tài xế
   version: 1.0.0
 
