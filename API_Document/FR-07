@@ -1,7 +1,7 @@
 openapi: 3.0.1
 
 info:
-  title: API Specification - FR07
+  title: API Trạng thái tài xế
   description: OpenAPI Spec cho Yêu cầu Chức năng FR07 - Quản lý trạng thái tài xế
   version: 1.0.0
 
