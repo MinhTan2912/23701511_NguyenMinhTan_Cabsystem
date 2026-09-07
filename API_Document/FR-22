@@ -1,0 +1,142 @@
+openapi: 3.0.1
+
+info:
+  title: Thời gian dự kiến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR22 - Thời gian dự kiến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/estimated-arrival:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR22 - Xác định khoảng cách và thời gian dự kiến
+
+      description: >
+        Hệ thống xác định khoảng cách giữa vị trí hiện tại của tài xế
+        và điểm đón, đồng thời cung cấp thời gian dự kiến tài xế đến điểm đón.
+
+      operationId: FR22_CalculateEstimatedArrival
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+              driverId: "DRV1001"
+              driverLocation:
+                latitude: 10.7805
+                longitude: 106.6950
+              pickupLocation:
+                latitude: 10.7769
+                longitude: 106.7009
+
+      responses:
+
+        '200':
+          description: Tính khoảng cách và thời gian dự kiến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Xác định thời gian dự kiến thành công"
+                data:
+                  bookingId: "BK202609070001"
+                  driverId: "DRV1001"
+                  distanceToPickup:
+                    value: 1.2
+                    unit: "km"
+                  estimatedArrivalTime:
+                    value: 5
+                    unit: "minutes"
+                  estimatedArrivalAt: "2026-09-07T19:40:00+07:00"
+                  calculatedAt: "2026-09-07T19:35:00+07:00"
+
+        '400':
+          description: Thông tin vị trí không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_LOCATION_DATA"
+                message: "Thông tin vị trí tài xế hoặc điểm đón không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền xem thời gian dự kiến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền xem thông tin thời gian dự kiến của chuyến này"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_OR_DRIVER_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi hoặc tài xế"
+
+        '409':
+          description: Không thể xác định thời gian dự kiến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "ETA_NOT_AVAILABLE"
+                message: "Không thể xác định thời gian dự kiến do vị trí tài xế chưa được cập nhật"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
