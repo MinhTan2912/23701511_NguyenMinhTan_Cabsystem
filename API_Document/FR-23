@@ -1,0 +1,136 @@
+openapi: 3.0.1
+
+info:
+  title: Cập nhật trạng thái
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR23 - Cập nhật trạng thái
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/status/update-by-driver:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR23 - Tài xế cập nhật trạng thái chuyến
+
+      description: >
+        Tài xế có thể cập nhật trạng thái chuyến theo trình tự:
+        đã đến điểm đón, đã đón khách, đang di chuyển và hoàn thành chuyến.
+        Hệ thống kiểm tra trạng thái hiện tại trước khi cho phép chuyển sang trạng thái mới.
+
+      operationId: FR23_UpdateTripStatusByDriver
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+              driverId: "DRV1001"
+              status: "DRIVER_ARRIVED"
+              updatedAt: "2026-09-07T19:40:00+07:00"
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật trạng thái chuyến thành công"
+                data:
+                  bookingId: "BK202609070001"
+                  tripCode: "TRIP202609070001"
+                  driverId: "DRV1001"
+                  previousStatus: "DRIVER_ARRIVING"
+                  currentStatus: "DRIVER_ARRIVED"
+                  statusDescription: "Tài xế đã đến điểm đón"
+                  updatedAt: "2026-09-07T19:40:00+07:00"
+
+        '400':
+          description: Trạng thái chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_STATUS"
+                message: "Trạng thái chuyến không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Tài xế không có quyền cập nhật chuyến này
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật trạng thái của chuyến này"
+
+        '404':
+          description: Không tìm thấy chuyến đi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi"
+
+        '409':
+          description: Không thể chuyển sang trạng thái mới
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "INVALID_STATUS_TRANSITION"
+                message: "Không thể chuyển sang trạng thái mới từ trạng thái hiện tại"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
