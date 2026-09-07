@@ -1,0 +1,105 @@
+openapi: 3.0.1
+
+info:
+  title: API Specification - FR04
+  description: API cho Yêu cầu Chức năng FR04 - Phân quyền người dùng
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /auth/authorize:
+    get:
+      tags:
+        - 7.1 Quản lý tài khoản
+
+      summary: FR04 - Phân quyền
+
+      description: >
+        Hệ thống xác định vai trò người dùng sau khi đăng nhập
+        và chỉ cho phép truy cập các chức năng phù hợp với vai trò.
+
+      operationId: FR04_AuthorizeUser
+
+      security:
+        - bearerAuth: []
+
+      responses:
+
+        '200':
+          description: Xác định vai trò và quyền truy cập thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Xác định quyền truy cập thành công"
+
+                data:
+                  userId: "usr_1001"
+                  role: "CUSTOMER"
+
+                  permissions:
+                    - "BOOKING_CREATE"
+                    - "BOOKING_VIEW"
+                    - "BOOKING_CANCEL"
+                    - "TRIP_TRACK"
+                    - "PROFILE_UPDATE"
+
+                  accessibleFunctions:
+                    - "Đặt xe"
+                    - "Xem chuyến xe"
+                    - "Hủy chuyến"
+                    - "Theo dõi chuyến xe"
+                    - "Cập nhật thông tin cá nhân"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Người dùng không có quyền truy cập chức năng được yêu cầu
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền truy cập chức năng này"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
