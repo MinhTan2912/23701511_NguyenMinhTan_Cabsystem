@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: API Specification - FR01
+  title: API Đăng ký tài khoản
   description: OpenAPI Spec cho Yêu cầu Chức năng FR01 (Đăng ký tài khoản)
   version: 1.0.0
 servers:
