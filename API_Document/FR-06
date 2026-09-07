@@ -1,7 +1,7 @@
 openapi: 3.0.1
 
 info:
-  title: API Specification - FR06
+  title: API Quản lý phương tiện
   description: OpenAPI Spec cho Yêu cầu Chức năng FR06 - Quản lý phương tiện
   version: 1.0.0
 
