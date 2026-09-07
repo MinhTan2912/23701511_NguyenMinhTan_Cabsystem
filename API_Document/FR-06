@@ -1,0 +1,248 @@
+openapi: 3.0.1
+
+info:
+  title: API Specification - FR06
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR06 - Quản lý phương tiện
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /drivers/vehicles:
+    post:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR06 - Thêm phương tiện
+
+      description: >
+        Hệ thống cho phép tài xế thêm thông tin phương tiện.
+        Hệ thống kiểm tra tính hợp lệ và lưu thông tin phương tiện.
+
+      operationId: FR06_AddVehicle
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              licensePlate: "59A-12345"
+              vehicleType: "CAR"
+              brand: "Toyota"
+              model: "Vios"
+              color: "White"
+              manufactureYear: 2023
+
+      responses:
+
+        '201':
+          description: Thêm phương tiện thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Thêm phương tiện thành công"
+                data:
+                  vehicleId: "veh_1001"
+                  driverId: "drv_1001"
+                  licensePlate: "59A-12345"
+                  vehicleType: "CAR"
+                  brand: "Toyota"
+                  model: "Vios"
+                  color: "White"
+                  manufactureYear: 2023
+                  status: "ACTIVE"
+
+        '400':
+          description: Thông tin phương tiện không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_VEHICLE_DATA"
+                message: "Thông tin phương tiện không hợp lệ. Vui lòng kiểm tra lại dữ liệu"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền thêm phương tiện
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thêm phương tiện"
+
+        '409':
+          description: Biển số xe đã tồn tại
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "LICENSE_PLATE_ALREADY_EXISTS"
+                message: "Biển số xe đã tồn tại trong hệ thống"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+  /drivers/vehicles/update:
+    put:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR06 - Cập nhật thông tin phương tiện
+
+      description: >
+        Hệ thống cho phép tài xế cập nhật thông tin phương tiện.
+        Hệ thống kiểm tra tính hợp lệ và lưu thông tin đã cập nhật.
+
+      operationId: FR06_UpdateVehicle
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              vehicleId: "veh_1001"
+              licensePlate: "59A-12345"
+              vehicleType: "CAR"
+              brand: "Toyota"
+              model: "Vios"
+              color: "Black"
+              manufactureYear: 2024
+
+      responses:
+
+        '200':
+          description: Cập nhật thông tin phương tiện thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật thông tin phương tiện thành công"
+                data:
+                  vehicleId: "veh_1001"
+                  driverId: "drv_1001"
+                  licensePlate: "59A-12345"
+                  vehicleType: "CAR"
+                  brand: "Toyota"
+                  model: "Vios"
+                  color: "Black"
+                  manufactureYear: 2024
+                  status: "ACTIVE"
+
+        '400':
+          description: Thông tin phương tiện cập nhật không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_VEHICLE_DATA"
+                message: "Thông tin phương tiện không hợp lệ. Vui lòng kiểm tra lại dữ liệu"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Tài xế không có quyền cập nhật phương tiện
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật phương tiện này"
+
+        '404':
+          description: Không tìm thấy phương tiện
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "VEHICLE_NOT_FOUND"
+                message: "Không tìm thấy phương tiện"
+
+        '409':
+          description: Biển số xe đã được sử dụng bởi phương tiện khác
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "LICENSE_PLATE_ALREADY_EXISTS"
+                message: "Biển số xe đã tồn tại trong hệ thống"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
