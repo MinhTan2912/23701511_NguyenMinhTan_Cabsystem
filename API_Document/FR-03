@@ -1,0 +1,120 @@
+openapi: 3.0.1
+
+info:
+  title: API Specification - FR03
+  description: API cho Yêu cầu Chức năng FR03 - Cập nhật thông tin cá nhân
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /customers/profile:
+    put:
+      tags:
+        - 7.1 Quản lý tài khoản
+
+      summary: FR03 - Cập nhật thông tin
+
+      description: >
+        Hệ thống cho phép khách hàng cập nhật và lưu thông tin cá nhân hợp lệ.
+
+      operationId: FR03_UpdateCustomerProfile
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              fullName: "Nguyen Van A"
+              email: "nguyenvana@gmail.com"
+              dateOfBirth: "2000-01-15"
+              gender: "MALE"
+              address: "123 Nguyen Trai, Quan 1, TP.HCM"
+              avatarUrl: "https://cdn.ridehailing.example.com/avatar/usr_1001.jpg"
+
+      responses:
+
+        '200':
+          description: Cập nhật thông tin khách hàng thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật thông tin thành công"
+
+                data:
+                  userId: "usr_1001"
+                  phone: "0901234567"
+                  fullName: "Nguyen Van A"
+                  email: "nguyenvana@gmail.com"
+                  dateOfBirth: "2000-01-15"
+                  gender: "MALE"
+                  address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                  avatarUrl: "https://cdn.ridehailing.example.com/avatar/usr_1001.jpg"
+
+
+        '400':
+          description: Dữ liệu cập nhật không hợp lệ hoặc thiếu thông tin bắt buộc
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_PROFILE_DATA"
+                message: "Thông tin cập nhật không hợp lệ. Vui lòng kiểm tra lại dữ liệu."
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '409':
+          description: Thông tin cập nhật bị trùng với tài khoản khác
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "EMAIL_ALREADY_EXISTS"
+                message: "Email đã được sử dụng bởi tài khoản khác"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
