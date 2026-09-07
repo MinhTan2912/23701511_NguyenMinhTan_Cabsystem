@@ -1,0 +1,140 @@
+openapi: 3.0.1
+
+info:
+  title: Vòng đời chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR24 - Vòng đời chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/status/validate:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR24 - Kiểm tra chuyển đổi trạng thái chuyến
+
+      description: >
+        Hệ thống kiểm tra trạng thái hiện tại và trạng thái mới
+        để đảm bảo chuyến đi chỉ được chuyển đổi theo đúng vòng đời
+        và ngăn chặn các trạng thái không hợp lệ.
+
+      operationId: FR24_ValidateTripStatusTransition
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+              currentStatus: "DRIVER_ARRIVED"
+              newStatus: "PASSENGER_PICKED_UP"
+
+      responses:
+
+        '200':
+          description: Chuyển đổi trạng thái hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Chuyển đổi trạng thái chuyến hợp lệ"
+                data:
+                  bookingId: "BK202609070001"
+                  currentStatus: "DRIVER_ARRIVED"
+                  requestedStatus: "PASSENGER_PICKED_UP"
+                  validTransition: true
+                  nextAllowedStatuses:
+                    - "PASSENGER_PICKED_UP"
+
+        '400':
+          description: Trạng thái chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_STATUS"
+                message: "Trạng thái chuyến không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền kiểm tra trạng thái chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy chuyến đi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi"
+
+        '409':
+          description: Chuyển đổi trạng thái không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "INVALID_STATUS_TRANSITION"
+                message: "Không thể chuyển từ trạng thái hiện tại sang trạng thái được yêu cầu"
+                data:
+                  currentStatus: "DRIVER_ARRIVING"
+                  requestedStatus: "TRIP_COMPLETED"
+                  validTransition: false
+                  allowedNextStatuses:
+                    - "DRIVER_ARRIVED"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
