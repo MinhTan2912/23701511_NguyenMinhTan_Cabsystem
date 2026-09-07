@@ -1,20 +1,20 @@
 openapi: 3.0.1
 info:
   title: API Specification - FR02
-  description: OpenAPI Spec cho Yêu cầu Chức năng FR02 (Xác thực tài khoản - Đăng nhập / Đăng xuất)
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR02 (Xác thực tài khoản - Đăng nhập & Đăng xuất trong 1 API)
   version: 1.0.0
 servers:
   - url: https://api.ridehailing.example.com/v1
     description: Primary API Server
 
 paths:
-  /auth/login:
+  /auth/authenticate:
     post:
       tags:
         - 7.1 Quản lý tài khoản
-      summary: FR02 – Đăng nhập tài khoản
-      description: Hệ thống cho phép người dùng đăng nhập bằng cách kiểm tra và xác thực thông tin tài khoản (Số điện thoại/Email và Mật khẩu).
-      operationId: FR02_LoginAccount
+      summary: FR02 – Xác thực tài khoản
+      description: Hệ thống cho phép người dùng đăng nhập (kiểm tra thông tin xác thực) hoặc đăng xuất khỏi hệ thống thông qua tham số action.
+      operationId: FR02_AuthenticateAccount
       requestBody:
         required: true
         content:
@@ -22,21 +22,31 @@ paths:
             schema:
               type: object
               required:
-                - phone
-                - password
+                - action
               properties:
+                action:
+                  type: string
+                  enum:
+                    - LOGIN
+                    - LOGOUT
+                  description: Hành động xác thực (LOGIN = Đăng nhập, LOGOUT = Đăng xuất)
+                  example: "LOGIN"
                 phone:
                   type: string
-                  description: Số điện thoại đăng nhập
+                  description: Số điện thoại đăng nhập (Bắt buộc khi action = LOGIN)
                   example: "0901234567"
                 password:
                   type: string
                   format: password
-                  description: Mật khẩu của tài khoản
+                  description: Mật khẩu (Bắt buộc khi action = LOGIN)
                   example: "Password123!"
+                token:
+                  type: string
+                  description: Access Token cần hủy phiên (Bắt buộc khi action = LOGOUT)
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
         '200':
-          description: Đăng nhập thành công, trả về Access Token
+          description: Thao tác xác thực (Đăng nhập/Đăng xuất) thành công
           content:
             application/json:
               schema:
@@ -50,20 +60,18 @@ paths:
                     example: 200
                   message:
                     type: string
-                    example: "Đăng nhập thành công"
+                    example: "Xác thực thành công"
                   data:
                     type: object
                     properties:
                       accessToken:
                         type: string
-                        description: JWT Token dùng để xác thực các request sau
                         example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                       tokenType:
                         type: string
                         example: "Bearer"
                       expiresIn:
                         type: integer
-                        description: Thời gian hết hạn của Token (giây)
                         example: 86400
                       userInfo:
                         type: object
@@ -98,9 +106,9 @@ paths:
                     example: "INVALID_INPUT_DATA"
                   message:
                     type: string
-                    example: "Vui lòng nhập đầy đủ Số điện thoại và Mật khẩu"
+                    example: "Vui lòng nhập đầy đủ Số điện thoại và Mật khẩu khi đăng nhập"
         '401':
-          description: Xác thực thất bại (Sai số điện thoại hoặc mật khẩu)
+          description: Xác thực thất bại (Sai thông tin đăng nhập hoặc Token không hợp lệ)
           content:
             application/json:
               schema:
@@ -118,77 +126,6 @@ paths:
                   message:
                     type: string
                     example: "Số điện thoại hoặc mật khẩu không chính xác"
-        '500':
-          description: Lỗi hệ thống máy chủ
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  statusCode:
-                    type: integer
-                    example: 500
-                  errorCode:
-                    type: string
-                    example: "INTERNAL_SERVER_ERROR"
-                  message:
-                    type: string
-                    example: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
-
-  /auth/logout:
-    post:
-      tags:
-        - 7.1 Quản lý tài khoản
-      summary: FR02 – Đăng xuất tài khoản
-      description: Hệ thống cho phép người dùng đăng xuất và vô hiệu hóa phiên làm việc/AccessToken hiện tại.
-      operationId: FR02_LogoutAccount
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-          description: Access Token của phiên đăng nhập (Định dạng 'Bearer <token>')
-          schema:
-            type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-      responses:
-        '200':
-          description: Đăng xuất thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  statusCode:
-                    type: integer
-                    example: 200
-                  message:
-                    type: string
-                    example: "Đăng xuất thành công"
-        '401':
-          description: Token không hợp lệ hoặc đã hết hạn
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  statusCode:
-                    type: integer
-                    example: 401
-                  errorCode:
-                    type: string
-                    example: "INVALID_TOKEN"
-                  message:
-                    type: string
-                    example: "Phiên làm việc không hợp lệ hoặc đã hết hạn"
         '500':
           description: Lỗi hệ thống máy chủ
           content:
