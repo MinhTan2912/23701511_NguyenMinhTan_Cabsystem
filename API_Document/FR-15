@@ -1,0 +1,169 @@
+openapi: 3.0.1
+
+info:
+  title: Ưu tiên tài xế
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR15 - Ưu tiên tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/rank:
+    post:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR15 - Xếp hạng và lựa chọn tài xế ưu tiên
+
+      description: >
+        Hệ thống tính khoảng cách từ tài xế đến điểm đón và sử dụng
+        các tiêu chí vận hành để xếp hạng, lựa chọn tài xế phù hợp nhất
+        cho yêu cầu đặt xe.
+
+      operationId: FR15_RankAndPrioritizeDrivers
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+
+              pickupLocation:
+                latitude: 10.7688
+                longitude: 106.6866
+
+              drivers:
+                - driverId: "drv_1001"
+                  latitude: 10.7750
+                  longitude: 106.6900
+                  driverStatus: "AVAILABLE"
+                  vehicleType: "CAR"
+                  rating: 4.9
+                  completedTrips: 1250
+
+                - driverId: "drv_1002"
+                  latitude: 10.7900
+                  longitude: 106.7000
+                  driverStatus: "AVAILABLE"
+                  vehicleType: "CAR"
+                  rating: 4.7
+                  completedTrips: 980
+
+              rankingCriteria:
+                distanceWeight: 0.5
+                ratingWeight: 0.3
+                availabilityWeight: 0.2
+
+      responses:
+
+        '200':
+          description: Xếp hạng và lựa chọn tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Xếp hạng tài xế thành công"
+
+                data:
+                  bookingId: "booking_1001"
+
+                  rankedDrivers:
+                    - driverId: "drv_1001"
+                      distanceToPickup: 0.85
+                      rating: 4.9
+                      score: 0.94
+                      rank: 1
+                      priority: "HIGH"
+
+                    - driverId: "drv_1002"
+                      distanceToPickup: 2.45
+                      rating: 4.7
+                      score: 0.81
+                      rank: 2
+                      priority: "NORMAL"
+
+                  selectedDriver:
+                    driverId: "drv_1001"
+                    rank: 1
+                    priority: "HIGH"
+
+
+        '400':
+          description: Thông tin xếp hạng không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_RANKING_REQUEST"
+                message: "Thông tin xếp hạng tài xế không hợp lệ"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe hoặc tài xế phù hợp
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "DRIVER_OR_BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe hoặc tài xế phù hợp"
+
+
+        '409':
+          description: Không thể lựa chọn tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_SELECTION_CONFLICT"
+                message: "Không thể lựa chọn tài xế do trạng thái tài xế đã thay đổi"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xếp hạng tài xế. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của hệ thống hoặc nhân viên có quyền xử lý phân công tài xế
