@@ -1,0 +1,145 @@
+openapi: 3.0.1
+
+info:
+  title: Tìm tài xế thay thế
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR18 - Tìm tài xế thay thế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/reassign:
+    post:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR18 - Tìm và gửi yêu cầu cho tài xế thay thế
+
+      description: >
+        Hệ thống theo dõi thời gian phản hồi của tài xế.
+        Nếu tài xế từ chối hoặc không phản hồi trong thời gian quy định,
+        hệ thống lựa chọn tài xế phù hợp tiếp theo và gửi yêu cầu trên
+        cùng một yêu cầu đặt xe, không tạo yêu cầu đặt xe mới.
+
+      operationId: FR18_ReassignToNextDriver
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              previousRequestId: "req_1001"
+              previousDriverId: "drv_1001"
+              reason: "DRIVER_REJECTED"
+              responseTimeoutSeconds: 30
+
+      responses:
+
+        '200':
+          description: Đã chuyển yêu cầu sang tài xế thay thế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã chuyển yêu cầu sang tài xế thay thế"
+
+                data:
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+
+                  previousDriver:
+                    driverId: "drv_1001"
+                    requestId: "req_1001"
+                    response: "REJECT"
+                    reason: "DRIVER_REJECTED"
+
+                  replacementDriver:
+                    driverId: "drv_1002"
+                    requestId: "req_1002"
+                    responseStatus: "PENDING"
+                    rank: 2
+
+                  bookingStatus: "SEARCHING_DRIVER"
+                  newBookingCreated: false
+                  reassignedAt: "2026-09-07T19:45:00+07:00"
+
+
+        '400':
+          description: Thông tin chuyển tài xế không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_REASSIGNMENT_REQUEST"
+                message: "Thông tin tìm tài xế thay thế không hợp lệ"
+
+
+        '401':
+          description: Access Token không hợp lệ hoặc chưa đăng nhập
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe hoặc không có tài xế thay thế phù hợp
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "REPLACEMENT_DRIVER_NOT_FOUND"
+                message: "Không tìm thấy tài xế thay thế phù hợp"
+
+
+        '409':
+          description: Không thể chuyển yêu cầu sang tài xế khác
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "REASSIGNMENT_NOT_ALLOWED"
+                message: "Yêu cầu không thể được chuyển sang tài xế khác ở trạng thái hiện tại"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi tìm tài xế thay thế. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của hệ thống có quyền xử lý phân công tài xế
