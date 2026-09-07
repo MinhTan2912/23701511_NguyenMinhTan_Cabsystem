@@ -1,7 +1,7 @@
 openapi: 3.0.1
 
 info:
-  title: API Specification - FR03
+  title: API Cập nhật thông tin
   description: API cho Yêu cầu Chức năng FR03 - Cập nhật thông tin cá nhân
   version: 1.0.0
 
