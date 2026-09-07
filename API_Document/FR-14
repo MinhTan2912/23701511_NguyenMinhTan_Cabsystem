@@ -1,0 +1,154 @@
+openapi: 3.0.1
+
+info:
+  title: Tự động tìm tài xế
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR14 - Tự động tìm tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/search:
+    post:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR14 - Tự động tìm tài xế
+
+      description: >
+        Hệ thống xác định vị trí điểm đón, lấy danh sách tài xế đang hoạt động
+        và sẵn sàng, lọc tài xế có phương tiện phù hợp với yêu cầu đặt xe
+        và loại bỏ các tài xế không đủ điều kiện nhận chuyến.
+
+      operationId: FR14_SearchAvailableDrivers
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              pickupLocation:
+                address: "123 Nguyen Trai, Quan 1, TP.HCM"
+                latitude: 10.7688
+                longitude: 106.6866
+              vehicleType: "CAR"
+              searchRadius: 5
+
+      responses:
+
+        '200':
+          description: Tìm kiếm tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Tìm thấy tài xế phù hợp"
+
+                data:
+                  bookingId: "booking_1001"
+                  pickupLocation:
+                    latitude: 10.7688
+                    longitude: 106.6866
+
+                  vehicleType: "CAR"
+                  searchRadius: 5
+
+                  matchedDrivers:
+                    - driverId: "drv_1001"
+                      driverName: "Nguyen Van A"
+                      vehicleType: "CAR"
+                      vehiclePlate: "51A-12345"
+                      distanceToPickup: 1.2
+                      driverStatus: "AVAILABLE"
+                      eligible: true
+
+                    - driverId: "drv_1002"
+                      driverName: "Tran Van B"
+                      vehicleType: "CAR"
+                      vehiclePlate: "51H-67890"
+                      distanceToPickup: 2.4
+                      driverStatus: "AVAILABLE"
+                      eligible: true
+
+                  totalMatchedDrivers: 2
+
+
+        '400':
+          description: Thông tin tìm kiếm không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_MATCHING_REQUEST"
+                message: "Thông tin yêu cầu tìm tài xế không hợp lệ"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe"
+
+
+        '409':
+          description: Không tìm thấy tài xế phù hợp
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "NO_ELIGIBLE_DRIVER"
+                message: "Không tìm thấy tài xế đang hoạt động, sẵn sàng và có phương tiện phù hợp"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình tìm kiếm tài xế. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của hệ thống hoặc nhân viên có quyền thực hiện tìm kiếm tài xế
