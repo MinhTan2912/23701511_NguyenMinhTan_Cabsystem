@@ -1,0 +1,126 @@
+openapi: 3.0.1
+
+info:
+  title: API Specification - FR07
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR07 - Quản lý trạng thái tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /drivers/status:
+    put:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR07 - Cập nhật trạng thái tài xế
+
+      description: >
+        Tài xế có thể cập nhật trạng thái sẵn sàng hoặc không sẵn sàng.
+        Hệ thống chỉ đưa tài xế có trạng thái sẵn sàng vào quá trình tìm chuyến.
+
+      operationId: FR07_UpdateDriverStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              status: "AVAILABLE"
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật trạng thái tài xế thành công"
+
+                data:
+                  driverId: "drv_1001"
+                  status: "AVAILABLE"
+                  statusDescription: "Sẵn sàng nhận chuyến"
+                  eligibleForTripMatching: true
+                  updatedAt: "2026-09-07T19:30:00+07:00"
+
+
+        '400':
+          description: Trạng thái tài xế không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_DRIVER_STATUS"
+                message: "Trạng thái tài xế không hợp lệ. Chỉ chấp nhận AVAILABLE hoặc UNAVAILABLE"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Người dùng không có quyền cập nhật trạng thái tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật trạng thái tài xế"
+
+
+        '409':
+          description: Không thể cập nhật trạng thái do tài xế đang thực hiện chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_CURRENTLY_ON_TRIP"
+                message: "Không thể chuyển sang trạng thái không sẵn sàng khi tài xế đang thực hiện chuyến"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
