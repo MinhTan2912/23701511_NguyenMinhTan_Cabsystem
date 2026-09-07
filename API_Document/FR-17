@@ -1,0 +1,145 @@
+openapi: 3.0.1
+
+info:
+  title: Nhận/từ chối chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR17 - Nhận/từ chối chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/trip-response:
+    put:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR17 - Tài xế chấp nhận hoặc từ chối chuyến
+
+      description: >
+        Hệ thống cho phép tài xế phản hồi yêu cầu chuyến bằng cách
+        chấp nhận hoặc từ chối chuyến được gửi đến.
+
+      operationId: FR17_RespondToTripRequest
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              requestId: "req_1001"
+              bookingId: "booking_1001"
+              driverId: "drv_1001"
+              response: "ACCEPT"
+              responseReason: "Sẵn sàng nhận chuyến"
+              respondedAt: "2026-09-07T19:43:00+07:00"
+
+      responses:
+
+        '200':
+          description: Phản hồi yêu cầu chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Tài xế đã chấp nhận chuyến"
+
+                data:
+                  requestId: "req_1001"
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  driverId: "drv_1001"
+                  response: "ACCEPT"
+                  bookingStatus: "DRIVER_ASSIGNED"
+                  respondedAt: "2026-09-07T19:43:00+07:00"
+
+
+        '400':
+          description: Phản hồi không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_RESPONSE"
+                message: "Phản hồi chuyến không hợp lệ. Chỉ chấp nhận ACCEPT hoặc REJECT"
+
+
+        '401':
+          description: Tài xế chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Tài xế không có quyền phản hồi yêu cầu chuyến này
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền phản hồi yêu cầu chuyến này"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_REQUEST_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu chuyến"
+
+
+        '409':
+          description: Yêu cầu chuyến đã được xử lý hoặc đã hết thời gian phản hồi
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "TRIP_REQUEST_EXPIRED"
+                message: "Yêu cầu chuyến đã được xử lý hoặc đã hết thời gian phản hồi"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi xử lý phản hồi chuyến. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
