@@ -1,0 +1,245 @@
+openapi: 3.0.1
+
+info:
+  title: API Specification - FR05
+  description: API cho Yêu cầu Chức năng FR05 - Quản lý tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /drivers/profile:
+    get:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR05 - Xem hồ sơ tài xế
+
+      description: >
+        Hệ thống cho phép truy xuất và hiển thị thông tin hồ sơ của tài xế
+        đang đăng nhập.
+
+      operationId: FR05_GetDriverProfile
+
+      security:
+        - bearerAuth: []
+
+      responses:
+
+        '200':
+          description: Lấy thông tin hồ sơ tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lấy thông tin hồ sơ tài xế thành công"
+
+                data:
+                  driverId: "drv_1001"
+                  userId: "usr_2001"
+                  fullName: "Tran Van B"
+                  phone: "0912345678"
+                  email: "tranvanb@gmail.com"
+                  dateOfBirth: "1995-05-20"
+                  gender: "MALE"
+                  address: "456 Le Loi, Quan 1, TP.HCM"
+
+                  driverLicense:
+                    licenseNumber: "79A123456"
+                    licenseClass: "B2"
+                    issueDate: "2022-06-15"
+                    expiryDate: "2032-06-15"
+
+                  vehicle:
+                    vehicleId: "veh_1001"
+                    licensePlate: "59A-12345"
+                    vehicleType: "CAR"
+                    brand: "Toyota"
+                    model: "Vios"
+                    color: "White"
+
+                  status: "ACTIVE"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Người dùng không có quyền truy cập hồ sơ tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền truy cập thông tin hồ sơ tài xế"
+
+
+        '404':
+          description: Không tìm thấy hồ sơ tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "DRIVER_PROFILE_NOT_FOUND"
+                message: "Không tìm thấy hồ sơ tài xế"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
+
+
+  /drivers/profile/update:
+    put:
+      tags:
+        - 7.2 Quản lý tài xế
+
+      summary: FR05 - Cập nhật hồ sơ tài xế
+
+      description: >
+        Hệ thống cho phép cập nhật và lưu thông tin hồ sơ tài xế hợp lệ.
+
+      operationId: FR05_UpdateDriverProfile
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              fullName: "Tran Van B"
+              email: "tranvanb@gmail.com"
+              dateOfBirth: "1995-05-20"
+              gender: "MALE"
+              address: "456 Le Loi, Quan 1, TP.HCM"
+
+              driverLicense:
+                licenseNumber: "79A123456"
+                licenseClass: "B2"
+                issueDate: "2022-06-15"
+                expiryDate: "2032-06-15"
+
+              vehicle:
+                licensePlate: "59A-12345"
+                vehicleType: "CAR"
+                brand: "Toyota"
+                model: "Vios"
+                color: "White"
+
+      responses:
+
+        '200':
+          description: Cập nhật hồ sơ tài xế thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Cập nhật hồ sơ tài xế thành công"
+
+                data:
+                  driverId: "drv_1001"
+                  fullName: "Tran Van B"
+                  email: "tranvanb@gmail.com"
+                  address: "456 Le Loi, Quan 1, TP.HCM"
+                  status: "ACTIVE"
+
+
+        '400':
+          description: Dữ liệu hồ sơ tài xế không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_DRIVER_DATA"
+                message: "Thông tin hồ sơ tài xế không hợp lệ. Vui lòng kiểm tra lại dữ liệu"
+
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '403':
+          description: Người dùng không có quyền cập nhật hồ sơ tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền cập nhật hồ sơ tài xế"
+
+
+        '409':
+          description: Thông tin tài xế bị trùng với dữ liệu đã tồn tại
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_DATA_ALREADY_EXISTS"
+                message: "Thông tin tài xế hoặc phương tiện đã tồn tại"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế hoặc nhân viên quản lý
