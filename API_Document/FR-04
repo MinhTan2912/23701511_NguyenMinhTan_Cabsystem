@@ -1,7 +1,7 @@
 openapi: 3.0.1
 
 info:
-  title: API Specification - FR04
+  title: API Phân quyền
   description: API cho Yêu cầu Chức năng FR04 - Phân quyền người dùng
   version: 1.0.0
 
