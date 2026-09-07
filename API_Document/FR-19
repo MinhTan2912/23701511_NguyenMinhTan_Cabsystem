@@ -1,0 +1,136 @@
+openapi: 3.0.1
+
+info:
+  title: Không tìm được tài xế
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR19 - Không tìm được tài xế
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /driver-matching/no-driver:
+    put:
+      tags:
+        - 7.4 Tìm kiếm và phân công tài xế
+
+      summary: FR19 - Xử lý trường hợp không tìm được tài xế
+
+      description: >
+        Khi hệ thống không còn tài xế phù hợp để nhận chuyến,
+        hệ thống cập nhật trạng thái yêu cầu và thông báo cho khách hàng
+        về việc không thể tìm được tài xế.
+
+      operationId: FR19_HandleNoAvailableDriver
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "booking_1001"
+              reason: "NO_AVAILABLE_DRIVER"
+              notificationChannel: "APP"
+
+      responses:
+
+        '200':
+          description: Cập nhật trạng thái và thông báo cho khách hàng thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã cập nhật trạng thái và thông báo cho khách hàng"
+
+                data:
+                  bookingId: "booking_1001"
+                  tripCode: "CAB-20260907-1001"
+                  previousStatus: "SEARCHING_DRIVER"
+                  currentStatus: "NO_DRIVER_FOUND"
+                  reason: "NO_AVAILABLE_DRIVER"
+
+                  customerNotification:
+                    sent: true
+                    channel: "APP"
+                    message: "Hiện không tìm thấy tài xế phù hợp. Vui lòng thử lại sau."
+
+                  updatedAt: "2026-09-07T19:55:00+07:00"
+
+
+        '400':
+          description: Thông tin xử lý không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_NO_DRIVER_REQUEST"
+                message: "Thông tin xử lý yêu cầu không hợp lệ"
+
+
+        '401':
+          description: Access Token không hợp lệ hoặc chưa đăng nhập
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe"
+
+
+        '409':
+          description: Yêu cầu vẫn đang trong quá trình tìm tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_SEARCH_IN_PROGRESS"
+                message: "Yêu cầu vẫn đang trong quá trình tìm kiếm tài xế"
+
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi xử lý yêu cầu. Vui lòng thử lại sau"
+
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của hệ thống có quyền xử lý yêu cầu đặt xe
