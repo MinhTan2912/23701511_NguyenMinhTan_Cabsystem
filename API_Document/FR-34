@@ -1,0 +1,118 @@
+openapi: 3.0.1
+info:
+  title: API Thông báo trạng thái
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR34 (BR35 - Thông báo trạng thái chuyến đi)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /notifications/trip-status:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR34 – Thông báo trạng thái chuyến đi
+      description: Hệ thống gửi thông báo cho khách hàng khi chuyến đi có các thay đổi trạng thái quan trọng.
+      operationId: FR34_NotifyTripStatus
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609080001"
+              tripId: "TRIP202609080001"
+              tripCode: "TRIP202609080001"
+              customerId: "CUS1001"
+              driverId: "DRV1001"
+              previousStatus: "DRIVER_ARRIVING"
+              currentStatus: "DRIVER_ARRIVED"
+              notificationChannel: "APP"
+              eventType: "DRIVER_ARRIVED"
+              message: "Tài xế đã đến điểm đón của bạn."
+              occurredAt: "2026-09-08T15:40:00+07:00"
+
+      responses:
+        '200':
+          description: Gửi thông báo thay đổi trạng thái thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã gửi thông báo trạng thái chuyến đi"
+                data:
+                  notificationId: "NOTI202609080010"
+                  bookingId: "BK202609080001"
+                  tripId: "TRIP202609080001"
+                  tripCode: "TRIP202609080001"
+                  customerId: "CUS1001"
+                  previousStatus: "DRIVER_ARRIVING"
+                  currentStatus: "DRIVER_ARRIVED"
+                  eventType: "DRIVER_ARRIVED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  message: "Tài xế đã đến điểm đón của bạn."
+                  sentAt: "2026-09-08T15:40:05+07:00"
+
+        '400':
+          description: Thông tin trạng thái hoặc thông báo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_STATUS_NOTIFICATION"
+                message: "Thông tin trạng thái chuyến đi không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc thông tin xác thực không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Không có quyền gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy chuyến đi hoặc khách hàng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến đi"
+
+        '409':
+          description: Trạng thái chuyến đi không thay đổi hoặc đã gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "STATUS_NOTIFICATION_ALREADY_SENT"
+                message: "Thông báo cho trạng thái này đã được xử lý"
+
+        '500':
+          description: Lỗi hệ thống khi gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "NOTIFICATION_SERVICE_ERROR"
+                message: "Không thể gửi thông báo trạng thái chuyến đi"
