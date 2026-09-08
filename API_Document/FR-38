@@ -1,0 +1,328 @@
+openapi: 3.0.1
+
+info:
+  title: API Tra cứu lịch sử
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR38 (BR40 – Tra cứu lịch sử)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý và tra cứu dữ liệu phục vụ nhân viên vận hành
+
+paths:
+
+  /operations/history/trips:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR38 – Tra cứu lịch sử chuyến đi
+      description: Nhân viên vận hành có thể tìm kiếm và xem lịch sử các chuyến đi trong hệ thống.
+      operationId: FR38_searchTripHistory
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              keyword: "CAB-20260908-0001"
+              customerId: "CUS001"
+              driverId: "DRV001"
+              tripStatus: "TRIP_COMPLETED"
+              fromDate: "2026-09-01"
+              toDate: "2026-09-08"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Tra cứu lịch sử chuyến đi thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Trip history retrieved successfully"
+                data:
+                  totalResults: 1
+                  page: 1
+                  pageSize: 20
+                  trips:
+                    - tripId: "TRIP202609080001"
+                      bookingId: "BK202609080001"
+                      tripCode: "CAB-20260908-0001"
+                      customerId: "CUS001"
+                      customerName: "Nguyen Van A"
+                      driverId: "DRV001"
+                      driverName: "Tran Van B"
+                      tripStatus: "TRIP_COMPLETED"
+                      pickupAddress: "123 Nguyen Trai, District 1"
+                      dropoffAddress: "456 Dien Bien Phu, District 3"
+                      totalDistance: 8.5
+                      totalAmount: 85000
+                      currency: "VND"
+                      completedAt: "2026-09-08T15:30:00Z"
+
+        '400':
+          description: Điều kiện tìm kiếm không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid trip history search criteria"
+                errorCode: "INVALID_SEARCH_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền tra cứu lịch sử
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy lịch sử chuyến đi
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No trip history found"
+                errorCode: "TRIP_HISTORY_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/history/payments:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR38 – Tra cứu lịch sử giao dịch
+      description: Nhân viên vận hành có thể tìm kiếm và xem lịch sử các giao dịch thanh toán.
+      operationId: FR38_searchPaymentHistory
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              keyword: "TXN202609080001"
+              customerId: "CUS001"
+              paymentMethod: "MOMO"
+              paymentStatus: "PAID"
+              fromDate: "2026-09-01"
+              toDate: "2026-09-08"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Tra cứu lịch sử giao dịch thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Payment history retrieved successfully"
+                data:
+                  totalResults: 1
+                  page: 1
+                  pageSize: 20
+                  transactions:
+                    - paymentId: "PAY202609080001"
+                      transactionId: "TXN202609080001"
+                      tripId: "TRIP202609080001"
+                      bookingId: "BK202609080001"
+                      customerId: "CUS001"
+                      customerName: "Nguyen Van A"
+                      paymentMethod: "MOMO"
+                      amount: 85000
+                      currency: "VND"
+                      transactionStatus: "SUCCESS"
+                      paymentStatus: "PAID"
+                      transactionTime: "2026-09-08T15:31:00Z"
+
+        '400':
+          description: Điều kiện tìm kiếm không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid payment history search criteria"
+                errorCode: "INVALID_SEARCH_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền tra cứu giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy lịch sử giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No payment history found"
+                errorCode: "PAYMENT_HISTORY_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/history/detail:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR38 – Xem chi tiết lịch sử
+      description: Nhân viên vận hành có thể xem thông tin chi tiết của một chuyến đi hoặc giao dịch thanh toán.
+      operationId: FR38_getHistoryDetail
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              historyType: "TRIP"
+              recordId: "TRIP202609080001"
+
+      responses:
+        '200':
+          description: Xem chi tiết lịch sử thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "History detail retrieved successfully"
+                data:
+                  historyType: "TRIP"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  tripCode: "CAB-20260908-0001"
+                  customerId: "CUS001"
+                  customerName: "Nguyen Van A"
+                  driverId: "DRV001"
+                  driverName: "Tran Van B"
+                  tripStatus: "TRIP_COMPLETED"
+                  paymentStatus: "PAID"
+                  paymentMethod: "MOMO"
+                  totalDistance: 8.5
+                  totalAmount: 85000
+                  currency: "VND"
+                  startedAt: "2026-09-08T15:15:00Z"
+                  completedAt: "2026-09-08T15:30:00Z"
+
+        '400':
+          description: Dữ liệu yêu cầu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid history record"
+                errorCode: "INVALID_RECORD"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền xem chi tiết lịch sử
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy bản ghi lịch sử
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "History record not found"
+                errorCode: "HISTORY_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
