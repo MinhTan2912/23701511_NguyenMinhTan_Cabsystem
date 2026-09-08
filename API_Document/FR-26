@@ -1,0 +1,274 @@
+openapi: 3.0.1
+
+info:
+  title: Lịch sử chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR26 - Lịch sử chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/history:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR26 - Xem danh sách lịch sử chuyến
+
+      description: >
+        Hệ thống cho phép khách hàng xem danh sách các chuyến đã hoàn thành,
+        bao gồm mã chuyến, thời gian, điểm đón, điểm đến và số tiền phải trả.
+
+      operationId: FR26_GetTripHistory
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              customerId: "CUS1001"
+              page: 1
+              pageSize: 10
+
+      responses:
+
+        '200':
+          description: Lấy danh sách lịch sử chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lấy lịch sử chuyến thành công"
+                data:
+                  customerId: "CUS1001"
+                  totalTrips: 25
+                  page: 1
+                  pageSize: 10
+                  trips:
+                    - tripId: "TRP100001"
+                      bookingId: "BK202609070001"
+                      tripCode: "TRIP202609070001"
+                      pickupAddress: "268 Lý Thường Kiệt, Quận 10, TP.HCM"
+                      dropoffAddress: "01 Nguyễn Huệ, Quận 1, TP.HCM"
+                      completedAt: "2026-09-07T20:15:00+07:00"
+                      totalAmount: 85000
+                      currency: "VND"
+                      status: "TRIP_COMPLETED"
+
+                    - tripId: "TRP100002"
+                      bookingId: "BK202609060002"
+                      tripCode: "TRIP202609060002"
+                      pickupAddress: "Đường Nguyễn Trãi, Quận 5, TP.HCM"
+                      dropoffAddress: "Đường Điện Biên Phủ, Bình Thạnh, TP.HCM"
+                      completedAt: "2026-09-06T18:30:00+07:00"
+                      totalAmount: 65000
+                      currency: "VND"
+                      status: "TRIP_COMPLETED"
+
+        '400':
+          description: Thông tin yêu cầu không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_REQUEST"
+                message: "Thông tin yêu cầu không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền xem lịch sử chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền xem lịch sử chuyến của tài khoản này"
+
+        '404':
+          description: Không tìm thấy lịch sử chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_HISTORY_NOT_FOUND"
+                message: "Không tìm thấy lịch sử chuyến"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+
+  /trips/history/detail:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR26 - Xem chi tiết chuyến đã hoàn thành
+
+      description: >
+        Hệ thống cho phép khách hàng xem thông tin chi tiết của một chuyến
+        đã hoàn thành, bao gồm thông tin khách hàng, tài xế, điểm đón,
+        điểm đến, thời gian và số tiền phải trả.
+
+      operationId: FR26_GetTripHistoryDetail
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              customerId: "CUS1001"
+              tripId: "TRP100001"
+
+      responses:
+
+        '200':
+          description: Lấy chi tiết chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Lấy chi tiết chuyến thành công"
+                data:
+                  tripId: "TRP100001"
+                  bookingId: "BK202609070001"
+                  tripCode: "TRIP202609070001"
+                  status: "TRIP_COMPLETED"
+                  customer:
+                    customerId: "CUS1001"
+                    fullName: "Nguyễn Văn Bình"
+                    phone: "0912345678"
+                  driver:
+                    driverId: "DRV1001"
+                    fullName: "Nguyễn Văn An"
+                    phone: "0901234567"
+                    rating: 4.9
+                  pickupLocation:
+                    address: "268 Lý Thường Kiệt, Quận 10, TP.HCM"
+                    latitude: 10.7769
+                    longitude: 106.7009
+                  dropoffLocation:
+                    address: "01 Nguyễn Huệ, Quận 1, TP.HCM"
+                    latitude: 10.7736
+                    longitude: 106.7031
+                  startedAt: "2026-09-07T19:45:00+07:00"
+                  completedAt: "2026-09-07T20:15:00+07:00"
+                  totalDistance: 8.5
+                  distanceUnit: "km"
+                  totalAmount: 85000
+                  currency: "VND"
+                  paymentStatus: "PAID"
+
+        '400':
+          description: Thông tin yêu cầu không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_REQUEST"
+                message: "Thông tin yêu cầu không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền xem chi tiết chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền xem chi tiết chuyến này"
+
+        '404':
+          description: Không tìm thấy chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến"
+
+        '409':
+          description: Chuyến chưa hoàn thành
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "TRIP_NOT_COMPLETED"
+                message: "Chỉ có thể xem chi tiết các chuyến đã hoàn thành"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của khách hàng sau khi đăng nhập
