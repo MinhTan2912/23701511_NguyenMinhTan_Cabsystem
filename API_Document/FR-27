@@ -1,0 +1,155 @@
+openapi: 3.0.1
+
+info:
+  title: Tính cước
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR27 - Tính cước
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/fare/calculate:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+
+      summary: FR27 - Tính cước chuyến đi
+
+      description: >
+        Hệ thống xác định số tiền khách hàng phải trả sau khi chuyến đi hoàn thành,
+        dựa trên loại xe/dịch vụ và thông tin thực tế của chuyến đi.
+
+      operationId: FR27_CalculateTripFare
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              tripId: "TRP100001"
+              bookingId: "BK202609070001"
+              serviceId: "SVC_CAR"
+              vehicleType: "CAR"
+              distance:
+                value: 8.5
+                unit: "km"
+              duration:
+                value: 30
+                unit: "minutes"
+              startedAt: "2026-09-07T19:45:00+07:00"
+              completedAt: "2026-09-07T20:15:00+07:00"
+
+      responses:
+
+        '200':
+          description: Tính cước chuyến đi thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Tính cước chuyến đi thành công"
+                data:
+                  tripId: "TRP100001"
+                  bookingId: "BK202609070001"
+                  serviceId: "SVC_CAR"
+                  vehicleType: "CAR"
+                  distance:
+                    value: 8.5
+                    unit: "km"
+                  duration:
+                    value: 30
+                    unit: "minutes"
+                  fare:
+                    baseFare: 20000
+                    distanceFare: 51000
+                    timeFare: 14000
+                    surcharge: 0
+                    discount: 0
+                    totalAmount: 85000
+                    currency: "VND"
+                  calculatedAt: "2026-09-07T20:15:05+07:00"
+
+        '400':
+          description: Thông tin chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_DATA"
+                message: "Thông tin chuyến không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền thực hiện tính cước
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc loại dịch vụ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_OR_SERVICE_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến hoặc loại dịch vụ"
+
+        '409':
+          description: Chuyến chưa hoàn thành hoặc cước đã được tính
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "FARE_CALCULATION_NOT_ALLOWED"
+                message: "Chuyến chưa hoàn thành hoặc cước của chuyến đã được tính"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
