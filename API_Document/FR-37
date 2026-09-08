@@ -1,0 +1,222 @@
+openapi: 3.0.1
+
+info:
+  title: API Theo dõi hoạt động
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR37 (BR39 – Theo dõi hoạt động)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý và giám sát hoạt động vận hành
+
+paths:
+
+  /operations/active-trips:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR37 – Theo dõi các chuyến đang diễn ra
+      description: Nhân viên vận hành có thể theo dõi danh sách các chuyến đang diễn ra và trạng thái hiện tại của từng chuyến.
+      operationId: FR37_monitorActiveTrips
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              status: "TRIP_IN_PROGRESS"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Lấy danh sách chuyến đang diễn ra thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Active trips retrieved successfully"
+                data:
+                  totalTrips: 2
+                  page: 1
+                  pageSize: 20
+                  trips:
+                    - tripId: "TRIP202609080001"
+                      bookingId: "BK202609080001"
+                      tripCode: "CAB-20260908-0001"
+                      customerId: "CUS001"
+                      customerName: "Nguyen Van A"
+                      driverId: "DRV001"
+                      driverName: "Tran Van B"
+                      driverStatus: "ON_TRIP"
+                      tripStatus: "TRIP_IN_PROGRESS"
+                      pickupAddress: "123 Nguyen Trai, District 1"
+                      dropoffAddress: "456 Dien Bien Phu, District 3"
+                      driverLocation:
+                        latitude: 10.7769
+                        longitude: 106.7009
+                      updatedAt: "2026-09-08T15:25:00Z"
+
+        '400':
+          description: Điều kiện tra cứu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid monitoring criteria"
+                errorCode: "INVALID_MONITORING_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền theo dõi chuyến
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không có chuyến đang diễn ra
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No active trips found"
+                errorCode: "NO_ACTIVE_TRIPS"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/driver-status:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR37 – Theo dõi trạng thái hoạt động của tài xế
+      description: Nhân viên vận hành có thể theo dõi trạng thái hoạt động và vị trí hiện tại của tài xế.
+      operationId: FR37_monitorDriverStatus
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              driverId: "DRV001"
+              status: "ON_TRIP"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Lấy trạng thái tài xế thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Driver status retrieved successfully"
+                data:
+                  totalDrivers: 1
+                  page: 1
+                  pageSize: 20
+                  drivers:
+                    - driverId: "DRV001"
+                      driverName: "Tran Van B"
+                      driverStatus: "ON_TRIP"
+                      currentTripId: "TRIP202609080001"
+                      currentBookingId: "BK202609080001"
+                      vehicleType: "CAR"
+                      vehiclePlate: "51A-12345"
+                      location:
+                        latitude: 10.7769
+                        longitude: 106.7009
+                      lastUpdatedAt: "2026-09-08T15:25:00Z"
+
+        '400':
+          description: Điều kiện tra cứu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid driver status criteria"
+                errorCode: "INVALID_DRIVER_STATUS_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền theo dõi tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Driver not found"
+                errorCode: "DRIVER_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
