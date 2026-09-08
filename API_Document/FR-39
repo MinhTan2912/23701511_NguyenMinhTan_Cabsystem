@@ -1,0 +1,331 @@
+openapi: 3.0.1
+
+info:
+  title: API Xử lý bất thường
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR39 (BR41 – Xử lý bất thường)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý và xử lý các tình huống bất thường trong quá trình vận hành
+
+paths:
+
+  /operations/incidents:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR39 – Xem các chuyến có trạng thái bất thường
+      description: Nhân viên vận hành có thể xem danh sách các chuyến đang có trạng thái bất thường để theo dõi và xử lý.
+      operationId: FR39_getAbnormalTrips
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              incidentStatus: "PENDING"
+              tripStatus: "DRIVER_NO_SHOW"
+              fromDate: "2026-09-08"
+              toDate: "2026-09-08"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Lấy danh sách chuyến bất thường thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Abnormal trips retrieved successfully"
+                data:
+                  totalResults: 1
+                  page: 1
+                  pageSize: 20
+                  incidents:
+                    - incidentId: "INC202609080001"
+                      tripId: "TRIP202609080001"
+                      bookingId: "BK202609080001"
+                      tripCode: "CAB-20260908-0001"
+                      customerId: "CUS001"
+                      customerName: "Nguyen Van A"
+                      driverId: "DRV001"
+                      driverName: "Tran Van B"
+                      tripStatus: "DRIVER_NO_SHOW"
+                      incidentType: "DRIVER_NO_SHOW"
+                      incidentStatus: "PENDING"
+                      description: "Tài xế không đến điểm đón theo thời gian dự kiến."
+                      reportedAt: "2026-09-08T15:20:00Z"
+
+        '400':
+          description: Điều kiện tìm kiếm không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid incident search criteria"
+                errorCode: "INVALID_SEARCH_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền xử lý bất thường
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy chuyến có trạng thái bất thường
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No abnormal trips found"
+                errorCode: "NO_ABNORMAL_TRIPS"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/incidents/detail:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR39 – Xem chi tiết bất thường
+      description: Nhân viên vận hành có thể xem thông tin chi tiết của một chuyến có trạng thái bất thường.
+      operationId: FR39_getIncidentDetail
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              incidentId: "INC202609080001"
+              tripId: "TRIP202609080001"
+
+      responses:
+        '200':
+          description: Lấy chi tiết bất thường thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Incident detail retrieved successfully"
+                data:
+                  incidentId: "INC202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  tripCode: "CAB-20260908-0001"
+                  customerId: "CUS001"
+                  customerName: "Nguyen Van A"
+                  driverId: "DRV001"
+                  driverName: "Tran Van B"
+                  tripStatus: "DRIVER_NO_SHOW"
+                  incidentType: "DRIVER_NO_SHOW"
+                  incidentStatus: "PENDING"
+                  description: "Tài xế không đến điểm đón theo thời gian dự kiến."
+                  reportedAt: "2026-09-08T15:20:00Z"
+                  availableActions:
+                    - "REASSIGN_DRIVER"
+                    - "CANCEL_TRIP"
+                    - "CONTACT_CUSTOMER"
+                    - "CONTACT_DRIVER"
+
+        '400':
+          description: Dữ liệu yêu cầu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid incident information"
+                errorCode: "INVALID_INCIDENT"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền xem thông tin bất thường
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy sự cố
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Incident not found"
+                errorCode: "INCIDENT_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/incidents/handle:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR39 – Xử lý chuyến có trạng thái bất thường
+      description: Nhân viên vận hành thực hiện xử lý chuyến có trạng thái bất thường theo tình huống và chính sách của hệ thống.
+      operationId: FR39_handleIncident
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              incidentId: "INC202609080001"
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              action: "REASSIGN_DRIVER"
+              reason: "Tài xế không đến điểm đón."
+              replacementDriverId: "DRV002"
+              handledBy: "OPS001"
+              handledAt: "2026-09-08T15:25:00Z"
+
+      responses:
+        '200':
+          description: Xử lý bất thường thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Incident handled successfully"
+                data:
+                  incidentId: "INC202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  previousIncidentStatus: "PENDING"
+                  incidentStatus: "RESOLVED"
+                  action: "REASSIGN_DRIVER"
+                  previousDriverId: "DRV001"
+                  replacementDriverId: "DRV002"
+                  handledBy: "OPS001"
+                  handledAt: "2026-09-08T15:25:00Z"
+
+        '400':
+          description: Thông tin xử lý không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid incident handling data"
+                errorCode: "INVALID_HANDLING_DATA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền xử lý sự cố
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc sự cố
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Incident or trip not found"
+                errorCode: "RESOURCE_NOT_FOUND"
+
+        '409':
+          description: Sự cố đã được xử lý hoặc hành động không phù hợp với trạng thái chuyến
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Incident has already been resolved or action is not allowed"
+                errorCode: "INVALID_INCIDENT_STATE"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
