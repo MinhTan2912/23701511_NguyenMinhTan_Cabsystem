@@ -1,0 +1,250 @@
+openapi: 3.0.1
+
+info:
+  title: API Thông báo hoàn thành/thanh toán
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR35 (BR36–BR37 – Thông báo hoàn thành/thanh toán)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.7 Thông báo
+    description: Quản lý thông báo cho khách hàng và tài xế
+
+paths:
+
+  /notifications/trip-completed:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR35 – Thông báo chuyến đi hoàn thành
+      description: Hệ thống gửi thông báo cho khách hàng khi chuyến đi đã hoàn thành.
+      operationId: FR35_notifyTripCompleted
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609080001"
+              tripId: "TRIP202609080001"
+              tripCode: "CAB-20260908-0001"
+              customerId: "CUS001"
+              driverId: "DRV001"
+              eventType: "TRIP_COMPLETED"
+              notificationChannel: "APP"
+              message: "Chuyến đi của bạn đã hoàn thành."
+              completedAt: "2026-09-08T15:30:00Z"
+
+      responses:
+        '200':
+          description: Thông báo hoàn thành chuyến đi được gửi thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Trip completion notification sent successfully"
+                data:
+                  notificationId: "NOTI202609080001"
+                  bookingId: "BK202609080001"
+                  tripId: "TRIP202609080001"
+                  tripCode: "CAB-20260908-0001"
+                  customerId: "CUS001"
+                  eventType: "TRIP_COMPLETED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  message: "Chuyến đi của bạn đã hoàn thành."
+                  sentAt: "2026-09-08T15:30:05Z"
+
+        '400':
+          description: Dữ liệu yêu cầu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid trip completion notification data"
+                errorCode: "INVALID_NOTIFICATION_DATA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy chuyến đi hoặc khách hàng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Trip or customer not found"
+                errorCode: "RESOURCE_NOT_FOUND"
+
+        '409':
+          description: Chuyến đi chưa hoàn thành hoặc thông báo đã được gửi
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Trip is not completed or notification already sent"
+                errorCode: "INVALID_TRIP_STATE"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /notifications/payment-result:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR35 – Thông báo kết quả thanh toán
+      description: Hệ thống gửi thông báo cho khách hàng khi giao dịch thanh toán có kết quả.
+      operationId: FR35_notifyPaymentResult
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              transactionId: "TXN202609080001"
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS001"
+              paymentMethod: "MOMO"
+              paymentStatus: "PAID"
+              transactionStatus: "SUCCESS"
+              amount: 85000
+              currency: "VND"
+              eventType: "PAYMENT_COMPLETED"
+              notificationChannel: "APP"
+              message: "Thanh toán chuyến đi đã thành công."
+              completedAt: "2026-09-08T15:31:00Z"
+
+      responses:
+        '200':
+          description: Thông báo kết quả thanh toán được gửi thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Payment result notification sent successfully"
+                data:
+                  notificationId: "NOTI202609080002"
+                  paymentId: "PAY202609080001"
+                  transactionId: "TXN202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  customerId: "CUS001"
+                  paymentMethod: "MOMO"
+                  paymentStatus: "PAID"
+                  transactionStatus: "SUCCESS"
+                  amount: 85000
+                  currency: "VND"
+                  eventType: "PAYMENT_COMPLETED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  message: "Thanh toán chuyến đi đã thành công."
+                  sentAt: "2026-09-08T15:31:05Z"
+
+        '400':
+          description: Dữ liệu thanh toán không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid payment notification data"
+                errorCode: "INVALID_PAYMENT_DATA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy giao dịch hoặc khách hàng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Payment or customer not found"
+                errorCode: "RESOURCE_NOT_FOUND"
+
+        '409':
+          description: Kết quả thanh toán không hợp lệ hoặc thông báo đã được gửi
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Invalid payment status or notification already sent"
+                errorCode: "INVALID_PAYMENT_STATE"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
