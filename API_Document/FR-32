@@ -1,0 +1,205 @@
+openapi: 3.0.1
+info:
+  title: API Quản lý giao dịch
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR32 (Quản lý giao dịch - Lưu và tra cứu thông tin giao dịch thanh toán)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /payments/transactions:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR32 – Lưu giao dịch thanh toán
+      description: Hệ thống lưu mã giao dịch, số tiền, thời gian và trạng thái thanh toán để phục vụ tra cứu.
+      operationId: FR32_SaveTransaction
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              transactionId: "TXN202609080001"
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS1001"
+              paymentMethod: "MOMO"
+              amount: 85000
+              currency: "VND"
+              transactionStatus: "SUCCESS"
+              paymentStatus: "PAID"
+              transactionTime: "2026-09-08T15:20:00+07:00"
+
+      responses:
+        '201':
+          description: Lưu giao dịch thanh toán thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Giao dịch thanh toán đã được lưu thành công"
+                data:
+                  paymentId: "PAY202609080001"
+                  transactionId: "TXN202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  paymentMethod: "MOMO"
+                  amount: 85000
+                  currency: "VND"
+                  transactionStatus: "SUCCESS"
+                  paymentStatus: "PAID"
+                  transactionTime: "2026-09-08T15:20:00+07:00"
+                  recordedAt: "2026-09-08T15:20:05+07:00"
+
+        '400':
+          description: Dữ liệu giao dịch không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRANSACTION_DATA"
+                message: "Thông tin giao dịch không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc thông tin xác thực không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Không có quyền lưu giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy thông tin chuyến đi hoặc thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "PAYMENT_NOT_FOUND"
+                message: "Không tìm thấy thông tin thanh toán"
+
+        '409':
+          description: Mã giao dịch đã tồn tại
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "TRANSACTION_ALREADY_EXISTS"
+                message: "Mã giao dịch đã tồn tại trong hệ thống"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi lưu giao dịch. Vui lòng thử lại sau."
+
+  /payments/transactions/search:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR32 – Tra cứu giao dịch thanh toán
+      description: Hệ thống cho phép tra cứu thông tin giao dịch dựa trên mã giao dịch, chuyến đi hoặc trạng thái thanh toán.
+      operationId: FR32_SearchTransaction
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              customerId: "CUS1001"
+              transactionId: "TXN202609080001"
+              paymentStatus: "PAID"
+
+      responses:
+        '200':
+          description: Tra cứu giao dịch thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Tra cứu giao dịch thành công"
+                data:
+                  transactionId: "TXN202609080001"
+                  paymentId: "PAY202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  paymentMethod: "MOMO"
+                  amount: 85000
+                  currency: "VND"
+                  transactionStatus: "SUCCESS"
+                  paymentStatus: "PAID"
+                  transactionTime: "2026-09-08T15:20:00+07:00"
+
+        '400':
+          description: Thông tin tra cứu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_SEARCH_DATA"
+                message: "Thông tin tra cứu không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Không có quyền tra cứu giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền tra cứu giao dịch này"
+
+        '404':
+          description: Không tìm thấy giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRANSACTION_NOT_FOUND"
+                message: "Không tìm thấy giao dịch thanh toán"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi tra cứu giao dịch. Vui lòng thử lại sau."
