@@ -1,1 +1,113 @@
+openapi: 3.0.1
+info:
+  title: API Bảo mật thanh toán
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR30 (Bảo mật thanh toán - Không lưu thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán)
+  version: 1.0.0
 
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /payments/security/validate:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR30 – Bảo mật thanh toán
+      description: Hệ thống kiểm tra thông tin thanh toán và đảm bảo không lưu thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.
+      operationId: FR30_SecurePayment
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              tripId: "TRIP202609080001"
+              customerId: "CUS1001"
+              paymentMethod: "VISA"
+              providerToken: "tok_visa_202609080001"
+              transactionId: "TXN202609080001"
+              amount: 85000
+              currency: "VND"
+
+      responses:
+        '200':
+          description: Thông tin thanh toán hợp lệ và không chứa dữ liệu nhạy cảm cần lưu trữ
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Thông tin thanh toán hợp lệ và an toàn"
+                data:
+                  paymentId: "PAY202609080001"
+                  tripId: "TRIP202609080001"
+                  customerId: "CUS1001"
+                  paymentMethod: "VISA"
+                  transactionId: "TXN202609080001"
+                  amount: 85000
+                  currency: "VND"
+                  sensitiveDataStored: false
+                  securityStatus: "SAFE"
+                  validatedAt: "2026-09-08T15:10:00+07:00"
+
+        '400':
+          description: Dữ liệu thanh toán không hợp lệ hoặc chứa thông tin nhạy cảm
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "SENSITIVE_DATA_DETECTED"
+                message: "Thông tin thanh toán chứa dữ liệu nhạy cảm không được phép lưu trữ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc thông tin xác thực không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Người dùng không có quyền thực hiện thao tác thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy giao dịch hoặc thông tin thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "PAYMENT_NOT_FOUND"
+                message: "Không tìm thấy thông tin thanh toán"
+
+        '409':
+          description: Giao dịch đã được kiểm tra hoặc xử lý trước đó
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "PAYMENT_ALREADY_PROCESSED"
+                message: "Giao dịch thanh toán đã được xử lý trước đó"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình kiểm tra bảo mật thanh toán. Vui lòng thử lại sau."
