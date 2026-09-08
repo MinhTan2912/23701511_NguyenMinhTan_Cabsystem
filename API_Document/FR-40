@@ -1,0 +1,212 @@
+openapi: 3.0.1
+
+info:
+  title: API Phân quyền quản trị
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR40 (BR42 – Phân quyền quản trị)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý quyền truy cập và chức năng quản trị
+
+paths:
+
+  /admin/authorization/check:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR40 – Kiểm tra quyền quản trị
+      description: Hệ thống kiểm tra quyền của người dùng trước khi cho phép thực hiện các chức năng quản trị.
+      operationId: FR40_checkAdminAuthorization
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              userId: "ADM001"
+              role: "ADMIN"
+              functionCode: "MANAGE_USERS"
+              action: "UPDATE"
+
+      responses:
+        '200':
+          description: Người dùng có quyền thực hiện chức năng
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Authorization check successful"
+                data:
+                  userId: "ADM001"
+                  role: "ADMIN"
+                  functionCode: "MANAGE_USERS"
+                  action: "UPDATE"
+                  authorized: true
+                  checkedAt: "2026-09-08T15:40:00Z"
+
+        '400':
+          description: Thông tin kiểm tra quyền không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid authorization request"
+                errorCode: "INVALID_AUTHORIZATION_REQUEST"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Người dùng không có quyền thực hiện chức năng quản trị
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "You do not have permission to perform this action"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy người dùng hoặc chức năng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "User or administrative function not found"
+                errorCode: "RESOURCE_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /admin/authorization/permissions:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR40 – Tra cứu quyền quản trị
+      description: Hệ thống cung cấp danh sách các quyền và chức năng quản trị mà người dùng được phép thực hiện.
+      operationId: FR40_getAdminPermissions
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              userId: "ADM001"
+              role: "ADMIN"
+
+      responses:
+        '200':
+          description: Lấy danh sách quyền thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Admin permissions retrieved successfully"
+                data:
+                  userId: "ADM001"
+                  role: "ADMIN"
+                  permissions:
+                    - permissionCode: "MANAGE_USERS"
+                      permissionName: "Quản lý người dùng"
+                      actions:
+                        - "VIEW"
+                        - "CREATE"
+                        - "UPDATE"
+                        - "DELETE"
+                    - permissionCode: "VIEW_REPORTS"
+                      permissionName: "Xem báo cáo"
+                      actions:
+                        - "VIEW"
+                    - permissionCode: "MANAGE_OPERATIONS"
+                      permissionName: "Quản lý vận hành"
+                      actions:
+                        - "VIEW"
+                        - "UPDATE"
+
+        '400':
+          description: Thông tin yêu cầu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid permission request"
+                errorCode: "INVALID_PERMISSION_REQUEST"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền tra cứu quyền quản trị
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy người dùng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "User not found"
+                errorCode: "USER_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
