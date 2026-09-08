@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: FR29 - Thanh toán điện tử
+  title: API Thanh toán điện tử
   description: API tạo yêu cầu thanh toán điện tử, giao tiếp với nhà cung cấp thanh toán và nhận kết quả giao dịch.
   version: 1.0.0
 
