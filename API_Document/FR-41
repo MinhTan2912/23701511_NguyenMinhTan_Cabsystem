@@ -1,0 +1,298 @@
+openapi: 3.0.1
+
+info:
+  title: API Báo cáo
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR41 (BR43 – Báo cáo)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý và cung cấp các báo cáo vận hành
+
+paths:
+
+  /admin/reports/summary:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR41 – Báo cáo tổng hợp
+      description: Hệ thống cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành và tỷ lệ hủy theo khoảng thời gian.
+      operationId: FR41_getSummaryReport
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fromDate: "2026-09-01"
+              toDate: "2026-09-08"
+              serviceType: "ALL"
+
+      responses:
+        '200':
+          description: Lấy báo cáo tổng hợp thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Summary report retrieved successfully"
+                data:
+                  reportPeriod:
+                    fromDate: "2026-09-01"
+                    toDate: "2026-09-08"
+                  totalTrips: 1250
+                  completedTrips: 1080
+                  cancelledTrips: 120
+                  abnormalTrips: 50
+                  totalRevenue: 102500000
+                  currency: "VND"
+                  completionRate: 86.4
+                  cancellationRate: 9.6
+                  generatedAt: "2026-09-08T16:00:00Z"
+
+        '400':
+          description: Khoảng thời gian báo cáo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid report period"
+                errorCode: "INVALID_REPORT_PERIOD"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Người dùng không có quyền xem báo cáo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không có dữ liệu báo cáo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No report data found"
+                errorCode: "REPORT_DATA_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /admin/reports/trips:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR41 – Báo cáo số lượng chuyến
+      description: Hệ thống cung cấp thống kê số lượng chuyến theo trạng thái trong khoảng thời gian được chọn.
+      operationId: FR41_getTripReport
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fromDate: "2026-09-01"
+              toDate: "2026-09-08"
+              groupBy: "DAY"
+
+      responses:
+        '200':
+          description: Lấy báo cáo chuyến đi thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Trip report retrieved successfully"
+                data:
+                  groupBy: "DAY"
+                  reports:
+                    - date: "2026-09-08"
+                      totalTrips: 180
+                      completedTrips: 155
+                      cancelledTrips: 18
+                      abnormalTrips: 7
+                      completionRate: 86.11
+                      cancellationRate: 10.0
+
+        '400':
+          description: Tham số báo cáo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid trip report criteria"
+                errorCode: "INVALID_REPORT_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền xem báo cáo chuyến
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không có dữ liệu chuyến
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No trip report data found"
+                errorCode: "TRIP_REPORT_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /admin/reports/revenue:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR41 – Báo cáo doanh thu
+      description: Hệ thống cung cấp báo cáo doanh thu từ các chuyến đi đã hoàn thành.
+      operationId: FR41_getRevenueReport
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              fromDate: "2026-09-01"
+              toDate: "2026-09-08"
+              groupBy: "DAY"
+              currency: "VND"
+
+      responses:
+        '200':
+          description: Lấy báo cáo doanh thu thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Revenue report retrieved successfully"
+                data:
+                  groupBy: "DAY"
+                  currency: "VND"
+                  totalRevenue: 102500000
+                  reports:
+                    - date: "2026-09-08"
+                      completedTrips: 155
+                      revenue: 12850000
+
+        '400':
+          description: Tham số báo cáo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid revenue report criteria"
+                errorCode: "INVALID_REPORT_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền xem báo cáo doanh thu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không có dữ liệu doanh thu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No revenue report data found"
+                errorCode: "REVENUE_REPORT_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
