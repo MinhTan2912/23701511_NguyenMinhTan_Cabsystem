@@ -1,0 +1,275 @@
+openapi: 3.0.1
+info:
+  title: API Thông báo đặt/nhận chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR33 (BR33–BR34 - Thông báo đặt/nhận chuyến)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /notifications/booking:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR33 – Thông báo tiếp nhận yêu cầu đặt xe
+      description: Hệ thống thông báo cho khách hàng khi yêu cầu đặt xe đã được tiếp nhận thành công.
+      operationId: FR33_NotifyBookingReceived
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609080001"
+              tripCode: "TRIP202609080001"
+              customerId: "CUS1001"
+              notificationChannel: "APP"
+              eventType: "BOOKING_RECEIVED"
+              message: "Yêu cầu đặt xe của bạn đã được tiếp nhận và đang tìm tài xế."
+
+      responses:
+        '200':
+          description: Gửi thông báo tiếp nhận yêu cầu đặt xe thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã gửi thông báo tiếp nhận yêu cầu đặt xe"
+                data:
+                  notificationId: "NOTI202609080001"
+                  bookingId: "BK202609080001"
+                  customerId: "CUS1001"
+                  eventType: "BOOKING_RECEIVED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  sentAt: "2026-09-08T15:30:00+07:00"
+
+        '400':
+          description: Dữ liệu thông báo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_NOTIFICATION_DATA"
+                message: "Thông tin thông báo không hợp lệ"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '404':
+          description: Không tìm thấy yêu cầu đặt xe hoặc khách hàng
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "BOOKING_NOT_FOUND"
+                message: "Không tìm thấy yêu cầu đặt xe"
+
+        '500':
+          description: Lỗi hệ thống khi gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "NOTIFICATION_SERVICE_ERROR"
+                message: "Không thể gửi thông báo"
+
+  /notifications/matched-trip:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR33 – Thông báo có chuyến phù hợp
+      description: Hệ thống thông báo cho tài xế khi tìm thấy chuyến phù hợp với tài xế.
+      operationId: FR33_NotifyMatchedTrip
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              notificationId: "NOTI202609080002"
+              bookingId: "BK202609080001"
+              tripCode: "TRIP202609080001"
+              driverId: "DRV1001"
+              eventType: "TRIP_MATCHED"
+              notificationChannel: "APP"
+              pickupLocation: "123 Nguyễn Huệ, Quận 1, TP.HCM"
+              dropoffLocation: "456 Điện Biên Phủ, Bình Thạnh, TP.HCM"
+              vehicleType: "CAR"
+              responseExpiresAt: "2026-09-08T15:31:00+07:00"
+
+      responses:
+        '200':
+          description: Gửi thông báo có chuyến phù hợp thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã gửi thông báo có chuyến phù hợp cho tài xế"
+                data:
+                  notificationId: "NOTI202609080002"
+                  bookingId: "BK202609080001"
+                  tripCode: "TRIP202609080001"
+                  driverId: "DRV1001"
+                  eventType: "TRIP_MATCHED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  sentAt: "2026-09-08T15:30:20+07:00"
+
+        '400':
+          description: Dữ liệu chuyến hoặc thông báo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_NOTIFICATION"
+                message: "Thông tin chuyến không hợp lệ"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Tài xế không có quyền nhận thông báo chuyến
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Tài xế không đủ điều kiện nhận thông báo"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_OR_DRIVER_NOT_FOUND"
+                message: "Không tìm thấy chuyến hoặc tài xế"
+
+        '500':
+          description: Lỗi hệ thống khi gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "NOTIFICATION_SERVICE_ERROR"
+                message: "Không thể gửi thông báo"
+
+  /notifications/driver-accepted:
+    post:
+      tags:
+        - 7.7 Thông báo
+      summary: FR33 – Thông báo tài xế đã nhận chuyến
+      description: Hệ thống thông báo cho khách hàng khi tài xế đã chấp nhận yêu cầu chuyến.
+      operationId: FR33_NotifyDriverAccepted
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609080001"
+              tripCode: "TRIP202609080001"
+              customerId: "CUS1001"
+              driverId: "DRV1001"
+              driverName: "Nguyễn Văn A"
+              vehicleType: "CAR"
+              licensePlate: "51A-12345"
+              eventType: "DRIVER_ACCEPTED"
+              notificationChannel: "APP"
+              message: "Tài xế Nguyễn Văn A đã nhận chuyến của bạn."
+
+      responses:
+        '200':
+          description: Gửi thông báo tài xế nhận chuyến thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã gửi thông báo tài xế nhận chuyến"
+                data:
+                  notificationId: "NOTI202609080003"
+                  bookingId: "BK202609080001"
+                  tripCode: "TRIP202609080001"
+                  customerId: "CUS1001"
+                  driverId: "DRV1001"
+                  eventType: "DRIVER_ACCEPTED"
+                  notificationChannel: "APP"
+                  notificationStatus: "SENT"
+                  sentAt: "2026-09-08T15:31:00+07:00"
+
+        '400':
+          description: Dữ liệu thông báo không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_NOTIFICATION_DATA"
+                message: "Thông tin thông báo không hợp lệ"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc thông tin tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_OR_DRIVER_NOT_FOUND"
+                message: "Không tìm thấy chuyến hoặc thông tin tài xế"
+
+        '409':
+          description: Chuyến chưa được tài xế nhận
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "DRIVER_NOT_ACCEPTED"
+                message: "Tài xế chưa nhận chuyến"
+
+        '500':
+          description: Lỗi hệ thống khi gửi thông báo
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "NOTIFICATION_SERVICE_ERROR"
+                message: "Không thể gửi thông báo"
