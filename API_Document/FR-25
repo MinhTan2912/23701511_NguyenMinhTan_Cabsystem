@@ -1,0 +1,158 @@
+openapi: 3.0.1
+
+info:
+  title: Lưu thông tin chuyến
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR25 - Lưu thông tin chuyến
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /trips/save:
+    post:
+      tags:
+        - 7.5 Quản lý chuyến đi
+
+      summary: FR25 - Lưu thông tin chuyến
+
+      description: >
+        Hệ thống lưu thông tin khách hàng, tài xế, điểm đón,
+        điểm đến, trạng thái và thời gian của chuyến.
+
+      operationId: FR25_SaveTripInformation
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              bookingId: "BK202609070001"
+              tripCode: "TRIP202609070001"
+              customerId: "CUS1001"
+              driverId: "DRV1001"
+              pickupLocation:
+                address: "268 Lý Thường Kiệt, Quận 10, TP.HCM"
+                latitude: 10.7769
+                longitude: 106.7009
+              dropoffLocation:
+                address: "01 Nguyễn Huệ, Quận 1, TP.HCM"
+                latitude: 10.7736
+                longitude: 106.7031
+              status: "TRIP_IN_PROGRESS"
+              startedAt: "2026-09-07T19:45:00+07:00"
+              completedAt: null
+              updatedAt: "2026-09-07T19:50:00+07:00"
+
+      responses:
+
+        '201':
+          description: Lưu thông tin chuyến thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Lưu thông tin chuyến thành công"
+                data:
+                  tripId: "TRP100001"
+                  bookingId: "BK202609070001"
+                  tripCode: "TRIP202609070001"
+                  customerId: "CUS1001"
+                  driverId: "DRV1001"
+                  pickupLocation:
+                    address: "268 Lý Thường Kiệt, Quận 10, TP.HCM"
+                    latitude: 10.7769
+                    longitude: 106.7009
+                  dropoffLocation:
+                    address: "01 Nguyễn Huệ, Quận 1, TP.HCM"
+                    latitude: 10.7736
+                    longitude: 106.7031
+                  status: "TRIP_IN_PROGRESS"
+                  startedAt: "2026-09-07T19:45:00+07:00"
+                  completedAt: null
+                  updatedAt: "2026-09-07T19:50:00+07:00"
+                  savedAt: "2026-09-07T19:50:01+07:00"
+
+        '400':
+          description: Thông tin chuyến không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_TRIP_DATA"
+                message: "Thông tin chuyến không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền lưu thông tin chuyến
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy thông tin đặt xe, khách hàng hoặc tài xế
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_REFERENCE_NOT_FOUND"
+                message: "Không tìm thấy thông tin đặt xe, khách hàng hoặc tài xế"
+
+        '409':
+          description: Thông tin chuyến đã tồn tại
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "TRIP_ALREADY_EXISTS"
+                message: "Thông tin chuyến đã tồn tại trong hệ thống"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của người dùng sau khi đăng nhập
