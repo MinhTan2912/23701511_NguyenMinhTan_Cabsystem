@@ -1,0 +1,220 @@
+openapi: 3.0.1
+
+info:
+  title: API Lưu đánh giá
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR44 (BR46 – Lưu đánh giá)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.9 Đánh giá và phản hồi
+    description: Quản lý và lưu kết quả đánh giá sau chuyến đi
+
+paths:
+
+  /ratings/save:
+    post:
+      tags:
+        - 7.9 Đánh giá và phản hồi
+      summary: FR44 – Lưu đánh giá
+      description: Hệ thống lưu kết quả đánh giá của khách hàng và liên kết đánh giá với chuyến đi và tài xế.
+      operationId: FR44_saveRating
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS001"
+              driverId: "DRV001"
+              rating: 5
+              commentId: "COM202609080001"
+              ratedAt: "2026-09-08T15:45:00Z"
+
+      responses:
+        '201':
+          description: Lưu đánh giá thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Rating saved successfully"
+                data:
+                  ratingId: "RATE202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  customerId: "CUS001"
+                  driverId: "DRV001"
+                  rating: 5
+                  commentId: "COM202609080001"
+                  ratingStatus: "SAVED"
+                  ratedAt: "2026-09-08T15:45:00Z"
+                  savedAt: "2026-09-08T15:45:02Z"
+
+        '400':
+          description: Dữ liệu đánh giá không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid rating data"
+                errorCode: "INVALID_RATING"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền lưu đánh giá
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy chuyến đi hoặc tài xế
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Trip or driver not found"
+                errorCode: "RESOURCE_NOT_FOUND"
+
+        '409':
+          description: Đánh giá đã tồn tại hoặc chuyến đi chưa hoàn thành
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Rating already exists or trip is not completed"
+                errorCode: "RATING_ALREADY_EXISTS"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /ratings/saved:
+    post:
+      tags:
+        - 7.9 Đánh giá và phản hồi
+      summary: FR44 – Tra cứu đánh giá đã lưu
+      description: Hệ thống cho phép tra cứu kết quả đánh giá đã được lưu theo chuyến đi hoặc tài xế.
+      operationId: FR44_getSavedRating
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              tripId: "TRIP202609080001"
+              driverId: "DRV001"
+
+      responses:
+        '200':
+          description: Lấy đánh giá đã lưu thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Saved rating retrieved successfully"
+                data:
+                  ratingId: "RATE202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  customerId: "CUS001"
+                  driverId: "DRV001"
+                  rating: 5
+                  commentId: "COM202609080001"
+                  ratingStatus: "SAVED"
+                  ratedAt: "2026-09-08T15:45:00Z"
+                  savedAt: "2026-09-08T15:45:02Z"
+
+        '400':
+          description: Thông tin tra cứu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid rating search request"
+                errorCode: "INVALID_REQUEST"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền tra cứu đánh giá
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy đánh giá
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Rating not found"
+                errorCode: "RATING_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
