@@ -1,0 +1,208 @@
+openapi: 3.0.1
+info:
+  title: FR29 - Thanh toán điện tử
+  description: API tạo yêu cầu thanh toán điện tử, giao tiếp với nhà cung cấp thanh toán và nhận kết quả giao dịch.
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+
+tags:
+  - name: 7.6 Tính cước và thanh toán
+    description: Quản lý tính cước và thanh toán chuyến đi
+
+paths:
+  /payments/electronic/create:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR29 - Tạo yêu cầu thanh toán điện tử
+      description: Hệ thống tạo yêu cầu thanh toán và gửi thông tin giao dịch đến nhà cung cấp thanh toán điện tử.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS001"
+              paymentMethod: "MOMO"
+              amount: 85000
+              currency: "VND"
+              returnUrl: "https://api.ridehailing.example.com/v1/payments/electronic/result"
+      responses:
+        '201':
+          description: Tạo yêu cầu thanh toán thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Payment request created successfully"
+                data:
+                  paymentId: "PAY202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  paymentMethod: "MOMO"
+                  amount: 85000
+                  currency: "VND"
+                  transactionStatus: "PENDING"
+                  paymentUrl: "https://payment-provider.example.com/pay/PAY202609080001"
+                  createdAt: "2026-09-08T15:00:00+07:00"
+
+        '400':
+          description: Dữ liệu thanh toán không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid payment information"
+                errorCode: "INVALID_PAYMENT_DATA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Unauthorized"
+
+        '403':
+          description: Không có quyền thực hiện thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Payment access denied"
+
+        '404':
+          description: Không tìm thấy chuyến đi hoặc thông tin thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Trip or payment information not found"
+                errorCode: "PAYMENT_DATA_NOT_FOUND"
+
+        '409':
+          description: Giao dịch đã tồn tại hoặc không thể tạo yêu cầu thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Payment request already exists"
+                errorCode: "PAYMENT_REQUEST_EXISTS"
+
+        '500':
+          description: Lỗi hệ thống hoặc lỗi kết nối nhà cung cấp thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Payment provider communication failed"
+                errorCode: "PAYMENT_PROVIDER_ERROR"
+
+  /payments/electronic/result:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR29 - Nhận kết quả giao dịch thanh toán
+      description: Hệ thống nhận và cập nhật kết quả giao dịch từ nhà cung cấp thanh toán điện tử.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              transactionId: "TXN202609080001"
+              paymentProvider: "MOMO"
+              transactionStatus: "SUCCESS"
+              amount: 85000
+              currency: "VND"
+              providerMessage: "Payment successful"
+              completedAt: "2026-09-08T15:02:30+07:00"
+      responses:
+        '200':
+          description: Nhận và xử lý kết quả giao dịch thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Payment result processed successfully"
+                data:
+                  paymentId: "PAY202609080001"
+                  transactionId: "TXN202609080001"
+                  paymentProvider: "MOMO"
+                  paymentStatus: "PAID"
+                  transactionStatus: "SUCCESS"
+                  amount: 85000
+                  currency: "VND"
+                  completedAt: "2026-09-08T15:02:30+07:00"
+                  updatedAt: "2026-09-08T15:02:35+07:00"
+
+        '400':
+          description: Kết quả giao dịch không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid transaction result"
+                errorCode: "INVALID_TRANSACTION_RESULT"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Unauthorized"
+
+        '404':
+          description: Không tìm thấy yêu cầu thanh toán
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Payment request not found"
+                errorCode: "PAYMENT_NOT_FOUND"
+
+        '409':
+          description: Giao dịch đã được xử lý
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                message: "Transaction has already been processed"
+                errorCode: "TRANSACTION_ALREADY_PROCESSED"
+
+        '500':
+          description: Lỗi hệ thống khi xử lý kết quả giao dịch
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Failed to process payment result"
+                errorCode: "PAYMENT_RESULT_PROCESSING_ERROR"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
