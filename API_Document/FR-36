@@ -1,0 +1,210 @@
+openapi: 3.0.1
+
+info:
+  title: API Tra cứu dữ liệu
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR36 (BR38 – Tra cứu dữ liệu)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+tags:
+  - name: 7.8 Quản trị và vận hành
+    description: Quản lý và tra cứu dữ liệu phục vụ nhân viên vận hành
+
+paths:
+
+  /operations/search:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR36 – Tra cứu dữ liệu
+      description: Nhân viên vận hành có thể tra cứu thông tin khách hàng, tài xế và chuyến đi.
+      operationId: FR36_searchOperationalData
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              searchType: "CUSTOMER"
+              keyword: "CUS001"
+              page: 1
+              pageSize: 20
+
+      responses:
+        '200':
+          description: Tra cứu dữ liệu thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Data retrieved successfully"
+                data:
+                  searchType: "CUSTOMER"
+                  totalResults: 1
+                  page: 1
+                  pageSize: 20
+                  results:
+                    - customerId: "CUS001"
+                      fullName: "Nguyen Van A"
+                      phone: "0901234567"
+                      email: "nguyenvana@example.com"
+                      accountStatus: "ACTIVE"
+
+        '400':
+          description: Dữ liệu tìm kiếm không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid search criteria"
+                errorCode: "INVALID_SEARCH_CRITERIA"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Nhân viên không có quyền tra cứu dữ liệu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy dữ liệu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "No data found"
+                errorCode: "DATA_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+  /operations/search/detail:
+    post:
+      tags:
+        - 7.8 Quản trị và vận hành
+      summary: FR36 – Xem chi tiết dữ liệu
+      description: Nhân viên vận hành có thể xem thông tin chi tiết của khách hàng, tài xế hoặc chuyến đi.
+      operationId: FR36_getDataDetail
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              searchType: "TRIP"
+              recordId: "TRIP202609080001"
+
+      responses:
+        '200':
+          description: Lấy thông tin chi tiết thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Data detail retrieved successfully"
+                data:
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  tripCode: "CAB-20260908-0001"
+                  customerId: "CUS001"
+                  customerName: "Nguyen Van A"
+                  driverId: "DRV001"
+                  driverName: "Tran Van B"
+                  pickupAddress: "123 Nguyen Trai, District 1"
+                  dropoffAddress: "456 Dien Bien Phu, District 3"
+                  status: "TRIP_COMPLETED"
+                  totalAmount: 85000
+                  currency: "VND"
+                  completedAt: "2026-09-08T15:30:00Z"
+
+        '400':
+          description: Dữ liệu yêu cầu không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                message: "Invalid record information"
+                errorCode: "INVALID_RECORD"
+
+        '401':
+          description: Chưa xác thực
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                message: "Authentication required"
+                errorCode: "UNAUTHORIZED"
+
+        '403':
+          description: Không có quyền xem dữ liệu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                message: "Permission denied"
+                errorCode: "FORBIDDEN"
+
+        '404':
+          description: Không tìm thấy dữ liệu
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                message: "Record not found"
+                errorCode: "DATA_NOT_FOUND"
+
+        '500':
+          description: Lỗi hệ thống
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                message: "Internal server error"
+                errorCode: "INTERNAL_SERVER_ERROR"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
