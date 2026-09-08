@@ -1,0 +1,221 @@
+openapi: 3.0.1
+info:
+  title: API Thanh toán thất bại
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR31 (Thanh toán thất bại - Ghi nhận, thông báo và cho phép khách hàng thực hiện lại thanh toán theo chính sách)
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+  /payments/failed:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR31 – Ghi nhận giao dịch thanh toán thất bại
+      description: Hệ thống ghi nhận kết quả giao dịch thất bại và cập nhật trạng thái thanh toán của chuyến đi.
+      operationId: FR31_RecordFailedPayment
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS1001"
+              paymentMethod: "VISA"
+              transactionId: "TXN202609080001"
+              paymentStatus: "FAILED"
+              failureReason: "INSUFFICIENT_BALANCE"
+              failureMessage: "Số dư tài khoản không đủ để thực hiện giao dịch"
+              amount: 85000
+              currency: "VND"
+              failedAt: "2026-09-08T15:15:00+07:00"
+
+      responses:
+        '200':
+          description: Ghi nhận giao dịch thất bại thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Đã ghi nhận giao dịch thanh toán thất bại"
+                data:
+                  paymentId: "PAY202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  paymentStatus: "FAILED"
+                  failureReason: "INSUFFICIENT_BALANCE"
+                  amount: 85000
+                  currency: "VND"
+                  retryAllowed: true
+                  notificationSent: true
+                  failedAt: "2026-09-08T15:15:00+07:00"
+
+        '400':
+          description: Dữ liệu giao dịch thất bại không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_PAYMENT_DATA"
+                message: "Thông tin giao dịch thanh toán không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc thông tin xác thực không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Người dùng không có quyền thực hiện thao tác
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thao tác này"
+
+        '404':
+          description: Không tìm thấy giao dịch hoặc chuyến đi
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "PAYMENT_NOT_FOUND"
+                message: "Không tìm thấy thông tin giao dịch thanh toán"
+
+        '409':
+          description: Giao dịch đã được xử lý hoặc không thể ghi nhận thất bại
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "PAYMENT_ALREADY_PROCESSED"
+                message: "Giao dịch thanh toán đã được xử lý trước đó"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi ghi nhận giao dịch thất bại. Vui lòng thử lại sau."
+
+  /payments/retry:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+      summary: FR31 – Thực hiện lại thanh toán
+      description: Hệ thống kiểm tra chính sách thanh toán và cho phép khách hàng thực hiện lại giao dịch nếu đủ điều kiện.
+      operationId: FR31_RetryPayment
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              paymentId: "PAY202609080001"
+              tripId: "TRIP202609080001"
+              bookingId: "BK202609080001"
+              customerId: "CUS1001"
+              paymentMethod: "MOMO"
+              amount: 85000
+              currency: "VND"
+              retryReason: "PREVIOUS_PAYMENT_FAILED"
+
+      responses:
+        '201':
+          description: Tạo yêu cầu thanh toán lại thành công
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 201
+                message: "Đã tạo yêu cầu thanh toán lại"
+                data:
+                  paymentId: "PAY202609080002"
+                  originalPaymentId: "PAY202609080001"
+                  tripId: "TRIP202609080001"
+                  bookingId: "BK202609080001"
+                  paymentMethod: "MOMO"
+                  amount: 85000
+                  currency: "VND"
+                  paymentStatus: "PENDING"
+                  retryAllowed: true
+                  retryCount: 1
+                  createdAt: "2026-09-08T15:17:00+07:00"
+
+        '400':
+          description: Yêu cầu thanh toán lại không hợp lệ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_RETRY_REQUEST"
+                message: "Thông tin yêu cầu thanh toán lại không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Yêu cầu xác thực người dùng"
+
+        '403':
+          description: Không có quyền thực hiện thanh toán lại
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền thực hiện thanh toán lại"
+
+        '404':
+          description: Không tìm thấy giao dịch thanh toán trước đó
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "PAYMENT_NOT_FOUND"
+                message: "Không tìm thấy giao dịch thanh toán trước đó"
+
+        '409':
+          description: Không được phép thanh toán lại theo chính sách
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "RETRY_NOT_ALLOWED"
+                message: "Giao dịch không được phép thực hiện lại theo chính sách thanh toán"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi khi tạo yêu cầu thanh toán lại. Vui lòng thử lại sau."
