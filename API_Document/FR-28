@@ -1,0 +1,141 @@
+openapi: 3.0.1
+
+info:
+  title: Thanh toán tiền mặt
+  description: OpenAPI Spec cho Yêu cầu Chức năng FR28 - Thanh toán tiền mặt
+  version: 1.0.0
+
+servers:
+  - url: https://api.ridehailing.example.com/v1
+    description: Primary API Server
+
+paths:
+
+  /payments/cash/record:
+    post:
+      tags:
+        - 7.6 Tính cước và thanh toán
+
+      summary: FR28 - Ghi nhận thanh toán tiền mặt
+
+      description: >
+        Hệ thống ghi nhận trạng thái thanh toán tiền mặt của chuyến
+        sau khi chuyến đi hoàn thành và cước phí đã được xác định.
+
+      operationId: FR28_RecordCashPayment
+
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            example:
+              tripId: "TRP100001"
+              bookingId: "BK202609070001"
+              paymentMethod: "CASH"
+              amount: 85000
+              paymentStatus: "PAID"
+              paidAt: "2026-09-07T20:16:00+07:00"
+              recordedBy: "DRV1001"
+
+      responses:
+
+        '200':
+          description: Ghi nhận thanh toán tiền mặt thành công
+
+          content:
+            application/json:
+              example:
+                success: true
+                statusCode: 200
+                message: "Ghi nhận thanh toán tiền mặt thành công"
+                data:
+                  paymentId: "PAY100001"
+                  tripId: "TRP100001"
+                  bookingId: "BK202609070001"
+                  paymentMethod: "CASH"
+                  amount: 85000
+                  currency: "VND"
+                  paymentStatus: "PAID"
+                  paidAt: "2026-09-07T20:16:00+07:00"
+                  recordedBy: "DRV1001"
+                  recordedAt: "2026-09-07T20:16:01+07:00"
+
+        '400':
+          description: Thông tin thanh toán không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 400
+                errorCode: "INVALID_PAYMENT_DATA"
+                message: "Thông tin thanh toán không hợp lệ"
+
+        '401':
+          description: Người dùng chưa đăng nhập hoặc Access Token không hợp lệ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 401
+                errorCode: "UNAUTHORIZED"
+                message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"
+
+        '403':
+          description: Người dùng không có quyền ghi nhận thanh toán
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 403
+                errorCode: "FORBIDDEN"
+                message: "Bạn không có quyền ghi nhận thanh toán cho chuyến này"
+
+        '404':
+          description: Không tìm thấy chuyến hoặc thông tin cước
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 404
+                errorCode: "TRIP_OR_FARE_NOT_FOUND"
+                message: "Không tìm thấy thông tin chuyến hoặc cước phí"
+
+        '409':
+          description: Thanh toán đã được ghi nhận hoặc chuyến chưa hoàn thành
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 409
+                errorCode: "PAYMENT_ALREADY_RECORDED"
+                message: "Thanh toán của chuyến đã được ghi nhận hoặc chuyến chưa đủ điều kiện thanh toán"
+
+        '500':
+          description: Lỗi hệ thống máy chủ
+
+          content:
+            application/json:
+              example:
+                success: false
+                statusCode: 500
+                errorCode: "INTERNAL_SERVER_ERROR"
+                message: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau"
+
+components:
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token của tài xế sau khi đăng nhập
