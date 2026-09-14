@@ -490,6 +490,32 @@ flowchart LR
 ```
 
 ## 9. Đặc tả Use Case
+## Use Case 
+| STT | Use Case | UC | FR liên quan |
+|---:|---|---|---|
+| 1 | Đăng ký tài khoản | UC01 | FR01 |
+| 2 | Đăng nhập | UC02 | FR02 |
+| 3 | Cập nhật thông tin cá nhân | UC03 | FR03 |
+| 4 | Quản lý hồ sơ tài xế | UC04 | FR05 |
+| 5 | Quản lý phương tiện | UC05 | FR06 |
+| 6 | Cập nhật trạng thái hoạt động | UC06 | FR07 |
+| 7 | **Tạo yêu cầu đặt xe** | **UC08** | **FR09–FR12** |
+| 8 | Hủy yêu cầu đặt xe | UC09 | FR13 |
+| 9 | **Tìm tài xế phù hợp** | **UC11** | **FR14–FR15** |
+| 10 | **Gửi yêu cầu nhận chuyến** | **UC12** | **FR16** |
+| 11 | **Xử lý phản hồi tài xế** | **UC13** | **FR17** |
+| 12 | **Tìm tài xế thay thế** | **UC14** | **FR18** |
+| 13 | **Xử lý không tìm được tài xế** | **UC15** | **FR19** |
+| 14 | **Theo dõi chuyến đi** | **UC17** | **FR21–FR22** |
+| 15 | **Cập nhật trạng thái chuyến** | **UC18** | **FR23–FR25** |
+| 16 | **Tính cước chuyến đi** | **UC19** | **FR27** |
+| 17 | Thanh toán tiền mặt | UC20 | FR28 |
+| 18 | **Thanh toán điện tử** | **UC21** | **FR29–FR30** |
+| 19 | Thanh toán lại | UC22 | FR31 |
+| 20 | **Theo dõi chuyến đang diễn ra** | **UC27** | **FR37** |
+| 21 | **Xử lý chuyến bất thường** | **UC29** | **FR39** |
+| 22 | **Xem báo cáo** | **UC30** | **FR41** |
+| 23 | **Đánh giá tài xế** | **UC31** | **FR42–FR44** |
 
 ## UC01 – Đăng ký tài khoản
 
@@ -503,328 +529,538 @@ flowchart LR
 | **Hậu điều kiện (Post-condition)** | Tài khoản được tạo thành công và khách hàng có thể đăng nhập. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chức năng "Đăng ký". | 2. Hiển thị form đăng ký. |
+| 1. Chọn chức năng "Đăng ký". | 2. Hiển thị biểu mẫu đăng ký. |
 | 3. Nhập thông tin đăng ký. | 4. Kiểm tra thông tin đăng ký. |
 | 5. Xác nhận đăng ký. | 6. Kiểm tra thông tin hợp lệ. |
-| | 7. Tạo tài khoản. |
-| | 8. Lưu thông tin tài khoản. |
-| | 9. Thông báo đăng ký thành công. |
+| | 7. Kiểm tra email/số điện thoại đã tồn tại. |
+| | 8. Tạo tài khoản. |
+| | 9. Lưu thông tin tài khoản. |
+| | 10. Thông báo đăng ký thành công. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
 | 3.1. Thông tin nhập chưa đầy đủ. | 3.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 3). |
-| 4.1. Email/số điện thoại đã tồn tại. | 4.2. Thông báo tài khoản đã tồn tại (quay lại bước 3). |
+| 4.1. Thông tin đăng ký không hợp lệ. | 4.2. Thông báo thông tin không hợp lệ (quay lại bước 3). |
+| 7.1. Email/số điện thoại đã tồn tại. | 7.2. Thông báo tài khoản đã tồn tại (quay lại bước 3). |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 7.1. Lỗi tạo tài khoản. | 7.2. Thông báo không thể tạo tài khoản và giữ lại thông tin đã nhập. |
+| 8.1. Lỗi tạo tài khoản. | 8.2. Thông báo không thể tạo tài khoản. |
 
 ## UC02 – Đăng nhập
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Đăng nhập |
-| **Mô tả sơ lược** | Cho phép người dùng đăng nhập vào hệ thống CAB để sử dụng các chức năng theo quyền được cấp. |
+| **Mô tả sơ lược** | Cho phép khách hàng, tài xế và nhân viên vận hành đăng nhập vào hệ thống CAB. |
 | **Actor chính** | Khách hàng / Tài xế / Nhân viên vận hành |
 | **Actor phụ** | Hệ thống CAB |
 | **Tiền điều kiện (Pre-condition)** | Người dùng đã có tài khoản hợp lệ. |
 | **Hậu điều kiện (Post-condition)** | Người dùng đăng nhập thành công và được truy cập các chức năng theo vai trò. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chức năng "Đăng nhập". | 2. Hiển thị form đăng nhập. |
-| 3. Nhập email/số điện thoại và mật khẩu. | 4. Kiểm tra thông tin đăng nhập. |
-| | 5. Xác thực tài khoản. |
-| | 6. Xác định vai trò của người dùng. |
-| | 7. Tạo phiên đăng nhập. |
-| | 8. Chuyển người dùng đến giao diện tương ứng. |
+| 1. Chọn chức năng "Đăng nhập". | 2. Hiển thị biểu mẫu đăng nhập. |
+| 3. Nhập thông tin đăng nhập. | 4. Kiểm tra thông tin đăng nhập. |
+| 5. Xác nhận đăng nhập. | 6. Xác thực tài khoản. |
+| | 7. Xác định vai trò người dùng. |
+| | 8. Hiển thị giao diện và chức năng phù hợp với vai trò. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 3.1. Người dùng nhập sai thông tin đăng nhập. | 3.2. Thông báo thông tin không chính xác và yêu cầu nhập lại. |
+| 3.1. Thông tin đăng nhập chưa đầy đủ. | 3.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 3). |
+| 4.1. Thông tin đăng nhập không chính xác. | 4.2. Thông báo đăng nhập thất bại (quay lại bước 3). |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 5.1. Tài khoản bị khóa hoặc không hoạt động. | 5.2. Thông báo tài khoản không thể đăng nhập. |
-| 5.3. Hệ thống xảy ra lỗi. | 5.4. Thông báo đăng nhập thất bại. |
+| 6.1. Lỗi xác thực tài khoản. | 6.2. Thông báo không thể xác thực tài khoản. |
 
-## UC03 – Đặt xe
+## UC03 – Cập nhật thông tin cá nhân
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Đặt xe |
-| **Mô tả sơ lược** | Cho phép khách hàng nhập điểm đón, điểm đến và loại xe để tạo yêu cầu đặt xe. |
-| **Actor chính** | Khách hàng |
+| **Tên use case** | Cập nhật thông tin cá nhân |
+| **Mô tả sơ lược** | Cho phép khách hàng và tài xế cập nhật thông tin cá nhân trên hệ thống CAB. |
+| **Actor chính** | Khách hàng / Tài xế |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập vào hệ thống. |
-| **Hậu điều kiện (Post-condition)** | Yêu cầu đặt xe được tạo thành công và chuyển sang quá trình tìm tài xế. |
+| **Tiền điều kiện (Pre-condition)** | Người dùng đã đăng nhập. |
+| **Hậu điều kiện (Post-condition)** | Thông tin cá nhân được cập nhật và lưu thành công. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chức năng "Đặt xe". | 2. Hiển thị giao diện đặt xe. |
-| 3. Nhập điểm đón và điểm đến. | 4. Kiểm tra thông tin điểm đón và điểm đến. |
-| 5. Chọn loại xe. | 6. Hiển thị thông tin loại xe đã chọn. |
-| 7. Xác nhận đặt xe. | 8. Kiểm tra thông tin yêu cầu. |
-| | 9. Tạo mã chuyến đi. |
-| | 10. Lưu thông tin yêu cầu đặt xe. |
-| | 11. Chuyển yêu cầu sang chức năng tìm tài xế. |
-| | 12. Thông báo yêu cầu đặt xe đã được tiếp nhận. |
+| 1. Chọn chức năng "Thông tin cá nhân". | 2. Hiển thị thông tin cá nhân hiện tại. |
+| 3. Chỉnh sửa thông tin cá nhân. | 4. Kiểm tra thông tin được cập nhật. |
+| 5. Xác nhận cập nhật. | 6. Kiểm tra tính hợp lệ của thông tin. |
+| | 7. Cập nhật thông tin cá nhân. |
+| | 8. Lưu thông tin vào hệ thống. |
+| | 9. Thông báo cập nhật thành công. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 3.1. Điểm đón hoặc điểm đến không hợp lệ. | 3.2. Thông báo yêu cầu nhập lại thông tin. |
-| 5.1. Loại xe không khả dụng. | 5.2. Thông báo và yêu cầu chọn loại xe khác. |
+| 3.1. Người dùng nhập thiếu thông tin. | 3.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 3). |
+| 4.1. Thông tin không hợp lệ. | 4.2. Thông báo thông tin không hợp lệ (quay lại bước 3). |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 10.1. Lỗi tạo yêu cầu đặt xe. | 10.2. Thông báo không thể tạo yêu cầu và yêu cầu thực hiện lại. |
+| 7.1. Lỗi cập nhật thông tin. | 7.2. Thông báo cập nhật thất bại. |
 
-## UC04 – Tìm và phân công tài xế
+## UC04 – Quản lý hồ sơ tài xế
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Tìm và phân công tài xế |
-| **Mô tả sơ lược** | Hệ thống tự động tìm tài xế phù hợp với yêu cầu đặt xe và phân công tài xế cho chuyến đi. |
-| **Actor chính** | Hệ thống CAB |
-| **Actor phụ** | Tài xế / Dịch vụ bản đồ GPS |
-| **Tiền điều kiện (Pre-condition)** | Khách hàng đã tạo yêu cầu đặt xe thành công. |
-| **Hậu điều kiện (Post-condition)** | Tài xế phù hợp được phân công hoặc khách hàng được thông báo không tìm được tài xế. |
-| **Luồng sự kiện chính (Main flow)** | |
-| **Actor** | **System** |
-| | 1. Nhận yêu cầu tìm tài xế. |
-| | 2. Xác định vị trí điểm đón. |
-| | 3. Lấy danh sách tài xế đang sẵn sàng. |
-| | 4. Kiểm tra loại phương tiện phù hợp. |
-| | 5. Tính khoảng cách giữa tài xế và điểm đón. |
-| | 6. Xếp thứ tự tài xế phù hợp. |
-| | 7. Gửi yêu cầu nhận chuyến cho tài xế. |
-| 8. Nhận thông báo chuyến mới. | 9. Chờ phản hồi của tài xế. |
-| 10. Chấp nhận chuyến. | 11. Gán tài xế cho chuyến. |
-| | 12. Cập nhật trạng thái chuyến. |
-| | 13. Thông báo tài xế đã nhận chuyến cho khách hàng. |
-| **Luồng sự kiện thay thế (Alternate flow)** | |
-| 10.1. Tài xế từ chối chuyến. | 10.2. Chuyển sang tài xế phù hợp tiếp theo. |
-| 10.3. Tài xế không phản hồi trong thời gian quy định. | 10.4. Chuyển sang tài xế phù hợp tiếp theo. |
-| **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 7.1. Không có tài xế phù hợp. | 7.2. Thông báo cho khách hàng không tìm được tài xế. |
-
-## UC05 – Nhận hoặc từ chối chuyến
-
-| **Đặc tả Use Case** | |
-|---|---|
-| **Tên use case** | Nhận hoặc từ chối chuyến |
-| **Mô tả sơ lược** | Cho phép tài xế xem thông tin và quyết định nhận hoặc từ chối yêu cầu chuyến. |
+| **Tên use case** | Quản lý hồ sơ tài xế |
+| **Mô tả sơ lược** | Cho phép tài xế cập nhật và quản lý hồ sơ cá nhân phục vụ hoạt động nhận chuyến. |
 | **Actor chính** | Tài xế |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Tài xế đang ở trạng thái sẵn sàng và nhận được yêu cầu chuyến. |
-| **Hậu điều kiện (Post-condition)** | Chuyến được tài xế nhận hoặc hệ thống tiếp tục tìm tài xế khác. |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đã đăng nhập. |
+| **Hậu điều kiện (Post-condition)** | Hồ sơ tài xế được tạo hoặc cập nhật thành công. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Nhận thông báo chuyến mới. | 2. Hiển thị thông tin chuyến. |
-| 3. Xem thông tin điểm đón, điểm đến và loại xe. | 4. Hiển thị thời gian phản hồi. |
-| 5. Chọn "Nhận chuyến". | 6. Kiểm tra chuyến còn khả dụng. |
-| | 7. Xác nhận tài xế nhận chuyến. |
-| | 8. Cập nhật trạng thái chuyến. |
-| | 9. Thông báo cho khách hàng. |
+| 1. Chọn chức năng "Hồ sơ tài xế". | 2. Hiển thị hồ sơ tài xế. |
+| 3. Nhập hoặc chỉnh sửa thông tin hồ sơ. | 4. Kiểm tra thông tin hồ sơ. |
+| 5. Xác nhận lưu hồ sơ. | 6. Kiểm tra tính hợp lệ của thông tin. |
+| | 7. Cập nhật hồ sơ tài xế. |
+| | 8. Lưu thông tin hồ sơ. |
+| | 9. Thông báo cập nhật hồ sơ thành công. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 5.1. Chọn "Từ chối chuyến". | 5.2. Ghi nhận tài xế từ chối và tiếp tục tìm tài xế khác. |
+| 3.1. Thông tin hồ sơ chưa đầy đủ. | 3.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 3). |
+| 4.1. Thông tin hồ sơ không hợp lệ. | 4.2. Thông báo thông tin không hợp lệ (quay lại bước 3). |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 6.1. Chuyến đã được tài xế khác nhận. | 6.2. Thông báo chuyến không còn khả dụng. |
+| 7.1. Lỗi cập nhật hồ sơ. | 7.2. Thông báo cập nhật hồ sơ thất bại. |
 
-## UC06 – Theo dõi chuyến đi
+## UC05 – Quản lý phương tiện
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Quản lý phương tiện |
+| **Mô tả sơ lược** | Cho phép tài xế thêm hoặc cập nhật thông tin phương tiện sử dụng để thực hiện chuyến đi. |
+| **Actor chính** | Tài xế |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đã đăng nhập. |
+| **Hậu điều kiện (Post-condition)** | Thông tin phương tiện được thêm hoặc cập nhật thành công. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Quản lý phương tiện". | 2. Hiển thị thông tin phương tiện hiện tại. |
+| 3. Chọn thêm hoặc cập nhật phương tiện. | 4. Hiển thị biểu mẫu thông tin phương tiện. |
+| 5. Nhập hoặc chỉnh sửa thông tin phương tiện. | 6. Kiểm tra thông tin phương tiện. |
+| 7. Xác nhận lưu. | 8. Kiểm tra tính hợp lệ của thông tin. |
+| | 9. Lưu thông tin phương tiện. |
+| | 10. Thông báo cập nhật phương tiện thành công. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 5.1. Thông tin phương tiện chưa đầy đủ. | 5.2. Thông báo yêu cầu nhập đầy đủ thông tin (quay lại bước 5). |
+| 6.1. Thông tin phương tiện không hợp lệ. | 6.2. Thông báo thông tin không hợp lệ (quay lại bước 5). |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 9.1. Lỗi lưu thông tin phương tiện. | 9.2. Thông báo cập nhật phương tiện thất bại. |
+
+## UC06 – Cập nhật trạng thái hoạt động
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Cập nhật trạng thái hoạt động |
+| **Mô tả sơ lược** | Cho phép tài xế cập nhật trạng thái sẵn sàng hoặc không sẵn sàng nhận chuyến. |
+| **Actor chính** | Tài xế |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đã đăng nhập và có thông tin phương tiện hợp lệ. |
+| **Hậu điều kiện (Post-condition)** | Trạng thái hoạt động của tài xế được cập nhật thành công. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Trạng thái hoạt động". | 2. Hiển thị trạng thái hiện tại của tài xế. |
+| 3. Chọn trạng thái "Sẵn sàng" hoặc "Không sẵn sàng". | 4. Kiểm tra điều kiện cập nhật trạng thái. |
+| 5. Xác nhận thay đổi trạng thái. | 6. Cập nhật trạng thái hoạt động của tài xế. |
+| | 7. Lưu trạng thái vào hệ thống. |
+| | 8. Thông báo cập nhật trạng thái thành công. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Tài xế chưa đủ điều kiện chuyển sang "Sẵn sàng". | 3.2. Thông báo tài xế chưa đủ điều kiện nhận chuyến. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 6.1. Lỗi cập nhật trạng thái. | 6.2. Thông báo cập nhật trạng thái thất bại. |
+
+## UC07 – Tạo yêu cầu đặt xe
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Tạo yêu cầu đặt xe |
+| **Mô tả sơ lược** | Cho phép khách hàng tạo yêu cầu đặt xe bằng cách nhập điểm đón, điểm đến và lựa chọn loại xe. |
+| **Actor chính** | Khách hàng |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập. |
+| **Hậu điều kiện (Post-condition)** | Yêu cầu đặt xe được tạo và chuyển sang trạng thái "Đang tìm tài xế". |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn chức năng "Đặt xe". | 2. Hiển thị biểu mẫu đặt xe. |
+| 3. Nhập điểm đón và điểm đến. | 4. Kiểm tra thông tin điểm đón và điểm đến. |
+| 5. Chọn loại xe. | 6. Hiển thị các loại xe được hỗ trợ. |
+| 7. Xác nhận đặt xe. | 8. Kiểm tra thông tin yêu cầu đặt xe. |
+| | 9. Tạo mã chuyến đi. |
+| | 10. Lưu yêu cầu đặt xe. |
+| | 11. Cập nhật trạng thái "Đang tìm tài xế". |
+| | 12. Thông báo đã tiếp nhận yêu cầu đặt xe. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Điểm đón hoặc điểm đến không hợp lệ. | 3.2. Thông báo địa điểm không hợp lệ (quay lại bước 3). |
+| 5.1. Loại xe không được hỗ trợ. | 5.2. Thông báo loại xe không khả dụng (quay lại bước 5). |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 9.1. Lỗi tạo mã chuyến đi. | 9.2. Thông báo không thể tạo yêu cầu đặt xe. |
+| 10.1. Lỗi lưu yêu cầu. | 10.2. Thông báo đặt xe thất bại. |
+
+## UC08 – Hủy yêu cầu đặt xe
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Hủy yêu cầu đặt xe |
+| **Mô tả sơ lược** | Cho phép khách hàng hủy yêu cầu đặt xe theo trạng thái chuyến và chính sách của doanh nghiệp. |
+| **Actor chính** | Khách hàng |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập và có yêu cầu đặt xe đang hoạt động. |
+| **Hậu điều kiện (Post-condition)** | Yêu cầu đặt xe được cập nhật sang trạng thái "Đã hủy". |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Chọn yêu cầu đặt xe cần hủy. | 2. Hiển thị thông tin yêu cầu. |
+| 3. Chọn chức năng "Hủy yêu cầu". | 4. Kiểm tra trạng thái và điều kiện hủy. |
+| 5. Xác nhận hủy yêu cầu. | 6. Cập nhật trạng thái "Đã hủy". |
+| | 7. Lưu thông tin hủy. |
+| | 8. Gửi thông báo hủy yêu cầu. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Yêu cầu không thể hủy theo chính sách. | 3.2. Thông báo yêu cầu không thể hủy. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 6.1. Lỗi cập nhật trạng thái. | 6.2. Thông báo hủy yêu cầu thất bại. |
+
+## UC09 – Tìm tài xế phù hợp
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Tìm tài xế phù hợp |
+| **Mô tả sơ lược** | Hệ thống tìm tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng, loại xe và các tiêu chí vận hành. |
+| **Actor chính** | Hệ thống CAB |
+| **Actor phụ** | Dịch vụ bản đồ/GPS |
+| **Tiền điều kiện (Pre-condition)** | Yêu cầu đặt xe đã được tạo và đang ở trạng thái "Đang tìm tài xế". |
+| **Hậu điều kiện (Post-condition)** | Tài xế phù hợp được lựa chọn để gửi yêu cầu nhận chuyến hoặc hệ thống xác định không có tài xế phù hợp. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| | 1. Xác định điểm đón và loại xe từ yêu cầu đặt xe. |
+| | 2. Lấy danh sách tài xế đang ở trạng thái "Sẵn sàng". |
+| | 3. Lọc tài xế theo loại xe phù hợp. |
+| | 4. Lấy vị trí hiện tại của tài xế. |
+| | 5. Tính khoảng cách từ tài xế đến điểm đón. |
+| | 6. Xếp hạng tài xế theo khoảng cách và tiêu chí vận hành. |
+| | 7. Chọn tài xế phù hợp. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 2.1. Không có tài xế đang sẵn sàng. | 2.2. Hệ thống tiếp tục kiểm tra theo cơ chế tìm kiếm. |
+| 6.1. Có nhiều tài xế phù hợp tương đương. | 6.2. Hệ thống áp dụng tiêu chí ưu tiên tiếp theo. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 4.1. Không lấy được vị trí tài xế. | 4.2. Bỏ qua tài xế không có vị trí hợp lệ. |
+| 5.1. Lỗi tính khoảng cách. | 5.2. Ghi nhận lỗi và thực hiện tìm kiếm lại. |
+
+## UC10 – Gửi yêu cầu nhận chuyến
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Gửi yêu cầu nhận chuyến |
+| **Mô tả sơ lược** | Hệ thống gửi yêu cầu nhận chuyến đến tài xế phù hợp được lựa chọn. |
+| **Actor chính** | Hệ thống CAB |
+| **Actor phụ** | Tài xế |
+| **Tiền điều kiện (Pre-condition)** | Hệ thống đã xác định được tài xế phù hợp. |
+| **Hậu điều kiện (Post-condition)** | Yêu cầu nhận chuyến được gửi đến tài xế và chờ tài xế phản hồi. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| | 1. Xác định tài xế phù hợp. |
+| | 2. Lấy thông tin chuyến đi. |
+| | 3. Tạo yêu cầu nhận chuyến. |
+| | 4. Gửi yêu cầu nhận chuyến đến tài xế. |
+| | 5. Gửi thông báo cho tài xế. |
+| 6. Nhận thông tin yêu cầu chuyến. | |
+| 7. Xem thông tin chuyến. | |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 6.1. Tài xế không phản hồi trong thời gian quy định. | 6.2. Hệ thống ghi nhận không phản hồi và chuyển sang tìm tài xế thay thế. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 4.1. Không thể gửi yêu cầu đến tài xế. | 4.2. Hệ thống ghi nhận lỗi và xử lý gửi lại yêu cầu. |
+
+## UC11 – Xử lý phản hồi tài xế
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Xử lý phản hồi tài xế |
+| **Mô tả sơ lược** | Hệ thống xử lý phản hồi của tài xế đối với yêu cầu nhận chuyến. |
+| **Actor chính** | Tài xế |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đã nhận được yêu cầu nhận chuyến và đang chờ phản hồi. |
+| **Hậu điều kiện (Post-condition)** | Nếu tài xế chấp nhận, chuyến được gán cho tài xế. Nếu từ chối hoặc không phản hồi, hệ thống chuyển sang tìm tài xế thay thế. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Tài xế xem yêu cầu nhận chuyến. | 2. Hiển thị thông tin chuyến đi. |
+| 3. Tài xế chọn "Chấp nhận" hoặc "Từ chối". | 4. Tiếp nhận phản hồi của tài xế. |
+| | 5. Kiểm tra phản hồi và trạng thái yêu cầu. |
+| | 6. Nếu tài xế chấp nhận, gán tài xế cho chuyến. |
+| | 7. Cập nhật trạng thái chuyến. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Tài xế chọn "Từ chối". | 3.2. Ghi nhận tài xế từ chối yêu cầu. |
+| | 3.3. Chuyển sang tìm tài xế thay thế. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 4.1. Không thể ghi nhận phản hồi. | 4.2. Thông báo lỗi và yêu cầu tài xế thực hiện lại. |
+
+## UC12 – Tìm tài xế thay thế
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Tìm tài xế thay thế |
+| **Mô tả sơ lược** | Hệ thống tự động tìm tài xế khác khi tài xế được yêu cầu trước đó từ chối hoặc không phản hồi. |
+| **Actor chính** | Hệ thống CAB |
+| **Actor phụ** | Dịch vụ bản đồ/GPS |
+| **Tiền điều kiện (Pre-condition)** | Tài xế trước đó đã từ chối hoặc không phản hồi yêu cầu nhận chuyến trong thời gian quy định. |
+| **Hậu điều kiện (Post-condition)** | Tài xế thay thế phù hợp được lựa chọn để gửi yêu cầu nhận chuyến hoặc hệ thống xác định không còn tài xế phù hợp. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| | 1. Xác định yêu cầu đặt xe cần tìm tài xế thay thế. |
+| | 2. Lấy danh sách tài xế đang ở trạng thái "Sẵn sàng". |
+| | 3. Loại bỏ tài xế đã từ chối hoặc không phản hồi. |
+| | 4. Lọc tài xế theo loại xe phù hợp. |
+| | 5. Lấy vị trí hiện tại của tài xế. |
+| | 6. Tính khoảng cách từ tài xế đến điểm đón. |
+| | 7. Xếp hạng tài xế theo khoảng cách và tiêu chí vận hành. |
+| | 8. Chọn tài xế thay thế phù hợp. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 2.1. Không có tài xế đang sẵn sàng. | 2.2. Hệ thống tiếp tục kiểm tra theo cơ chế tìm kiếm. |
+| 7.1. Có nhiều tài xế phù hợp tương đương. | 7.2. Hệ thống áp dụng tiêu chí ưu tiên tiếp theo. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 5.1. Không lấy được vị trí tài xế. | 5.2. Bỏ qua tài xế không có vị trí hợp lệ. |
+| 6.1. Lỗi tính khoảng cách. | 6.2. Ghi nhận lỗi và thực hiện tìm kiếm lại. |
+
+## UC13 – Xử lý không tìm được tài xế
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Xử lý không tìm được tài xế |
+| **Mô tả sơ lược** | Hệ thống xử lý trường hợp không tìm được tài xế phù hợp cho yêu cầu đặt xe và thông báo cho khách hàng. |
+| **Actor chính** | Hệ thống CAB |
+| **Actor phụ** | Dịch vụ thông báo |
+| **Tiền điều kiện (Pre-condition)** | Hệ thống đã thực hiện tìm kiếm nhưng không có tài xế phù hợp. |
+| **Hậu điều kiện (Post-condition)** | Yêu cầu đặt xe được cập nhật trạng thái không tìm được tài xế và khách hàng nhận được thông báo. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| | 1. Xác định không có tài xế phù hợp. |
+| | 2. Cập nhật trạng thái yêu cầu đặt xe thành "Không tìm được tài xế". |
+| | 3. Lưu kết quả tìm kiếm. |
+| | 4. Gửi thông báo cho khách hàng. |
+| | 5. Hiển thị kết quả không tìm được tài xế cho khách hàng. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 1.1. Phát hiện vẫn còn tài xế có khả năng nhận chuyến. | 1.2. Hệ thống tiếp tục tìm kiếm tài xế phù hợp. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 4.1. Không thể gửi thông báo. | 4.2. Ghi nhận lỗi và thực hiện gửi lại thông báo. |
+
+## UC14 – Theo dõi chuyến đi
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Theo dõi chuyến đi |
-| **Mô tả sơ lược** | Cho phép khách hàng theo dõi trạng thái, vị trí tài xế và thời gian dự kiến đến. |
+| **Mô tả sơ lược** | Khách hàng theo dõi trạng thái, vị trí tài xế và thời gian dự kiến đến trong quá trình thực hiện chuyến đi. |
 | **Actor chính** | Khách hàng |
-| **Actor phụ** | Tài xế / Dịch vụ bản đồ GPS |
-| **Tiền điều kiện (Pre-condition)** | Tài xế đã nhận chuyến. |
-| **Hậu điều kiện (Post-condition)** | Khách hàng xem được thông tin và trạng thái hiện tại của chuyến. |
+| **Actor phụ** | Dịch vụ bản đồ/GPS |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập và chuyến đi đã được gán cho tài xế. |
+| **Hậu điều kiện (Post-condition)** | Thông tin vị trí, khoảng cách, ETA và trạng thái chuyến được hiển thị cho khách hàng. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Mở chuyến đang thực hiện. | 2. Hiển thị thông tin tài xế. |
-| | 3. Hiển thị thông tin phương tiện. |
-| | 4. Hiển thị vị trí hiện tại của tài xế. |
-| | 5. Hiển thị trạng thái chuyến. |
-| | 6. Tính thời gian dự kiến tài xế đến. |
-| | 7. Cập nhật thông tin chuyến theo thời gian thực. |
+| 1. Khách hàng chọn chuyến đang thực hiện. | 2. Hiển thị thông tin chuyến đi. |
+| | 3. Lấy vị trí hiện tại của tài xế từ GPS. |
+| | 4. Tính khoảng cách từ tài xế đến điểm đón. |
+| | 5. Tính thời gian dự kiến tài xế đến điểm đón (ETA). |
+| | 6. Hiển thị vị trí, khoảng cách, ETA và trạng thái chuyến. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| | 4.1. Không nhận được vị trí mới → hiển thị vị trí gần nhất. |
+| 3.1. Vị trí tài xế chưa được cập nhật. | 3.2. Thông báo thông tin vị trí chưa khả dụng và tiếp tục cập nhật. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| | 7.1. Mất kết nối → thông báo và thực hiện kết nối lại. |
+| 3.1. Không thể kết nối dịch vụ GPS. | 3.2. Ghi nhận lỗi và thử cập nhật vị trí lại. |
+| 4.1. Không thể tính khoảng cách. | 4.2. Thông báo tạm thời không thể xác định khoảng cách. |
 
-## UC07 – Cập nhật trạng thái chuyến
+## UC15 – Cập nhật trạng thái chuyến
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Cập nhật trạng thái chuyến |
-| **Mô tả sơ lược** | Cho phép tài xế cập nhật trạng thái chuyến trong quá trình thực hiện. |
+| **Mô tả sơ lược** | Tài xế cập nhật trạng thái chuyến trong quá trình thực hiện và hệ thống lưu lại thông tin liên quan. |
 | **Actor chính** | Tài xế |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Tài xế đã nhận chuyến. |
-| **Hậu điều kiện (Post-condition)** | Trạng thái chuyến được cập nhật và thông báo đến các bên liên quan. |
+| **Tiền điều kiện (Pre-condition)** | Tài xế đã đăng nhập và đang được gán cho chuyến đi. |
+| **Hậu điều kiện (Post-condition)** | Trạng thái chuyến được cập nhật hợp lệ và thông tin trạng thái được lưu vào hệ thống. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chuyến đang thực hiện. | 2. Hiển thị trạng thái hiện tại. |
-| 3. Chọn "Đã đến điểm đón". | 4. Cập nhật trạng thái chuyến. |
-| 5. Chọn "Đã đón khách". | 6. Cập nhật trạng thái chuyến. |
-| 7. Chọn "Đang di chuyển". | 8. Cập nhật trạng thái chuyến. |
-| 9. Chọn "Hoàn thành chuyến". | 10. Cập nhật chuyến thành hoàn thành. |
-| | 11. Thông báo trạng thái mới cho khách hàng. |
+| 1. Tài xế chọn chuyến đang thực hiện. | 2. Hiển thị trạng thái hiện tại của chuyến. |
+| 3. Tài xế chọn trạng thái mới. | 4. Kiểm tra trạng thái mới có hợp lệ hay không. |
+| 5. Tài xế xác nhận cập nhật. | 6. Cập nhật trạng thái chuyến. |
+| | 7. Lưu trạng thái và thời gian cập nhật. |
+| | 8. Cập nhật thông tin liên quan đến chuyến. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 3.1. Chọn trạng thái không phù hợp. | 3.2. Thông báo không thể chuyển sang trạng thái này. |
+| 3.1. Tài xế chọn "Đã đến điểm đón". | 3.2. Ghi nhận thời điểm tài xế đến điểm đón. |
+| 3.3. Tài xế chọn "Đã đón khách". | 3.4. Ghi nhận thời điểm đón khách. |
+| 3.5. Tài xế chọn "Đang thực hiện". | 3.6. Cập nhật trạng thái chuyến đang thực hiện. |
+| 3.7. Tài xế chọn "Hoàn thành". | 3.8. Ghi nhận thời điểm hoàn thành chuyến. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 4.1. Lỗi cập nhật trạng thái. | 4.2. Thông báo cập nhật thất bại và giữ trạng thái trước đó. |
+| 4.1. Trạng thái mới không hợp lệ. | 4.2. Thông báo lỗi và yêu cầu tài xế chọn lại. |
+| 6.1. Không thể cập nhật trạng thái. | 6.2. Ghi nhận lỗi và thông báo cập nhật thất bại. |
+| 7.1. Không thể lưu thông tin. | 7.2. Thông báo lỗi và yêu cầu thực hiện lại. |
 
-## UC08 – Tính cước chuyến đi
+## UC16 – Tính cước chuyến đi
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Tính cước chuyến đi |
-| **Mô tả sơ lược** | Xác định số tiền khách hàng phải thanh toán dựa trên thông tin chuyến đi. |
+| **Mô tả sơ lược** | Hệ thống tính số tiền khách hàng cần thanh toán dựa trên loại dịch vụ và thông tin chuyến đi. |
 | **Actor chính** | Hệ thống CAB |
-| **Actor phụ** | Dịch vụ bản đồ/GPS |
-| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành. |
-| **Hậu điều kiện (Post-condition)** | Số tiền phải trả được tính và lưu vào thông tin chuyến. |
+| **Actor phụ** | Không có |
+| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành và có đầy đủ thông tin cần thiết để tính cước. |
+| **Hậu điều kiện (Post-condition)** | Cước chuyến đi được tính và lưu vào thông tin chuyến. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| | 1. Nhận thông tin chuyến đã hoàn thành. |
-| | 2. Lấy loại xe/dịch vụ. |
-| | 3. Lấy thông tin quãng đường và thời gian. |
-| | 4. Áp dụng quy tắc tính cước. |
-| | 5. Tính tổng tiền chuyến đi. |
-| | 6. Lưu thông tin cước. |
-| | 7. Hiển thị số tiền cần thanh toán cho khách hàng. |
+| | 1. Nhận thông tin chuyến đi đã hoàn thành. |
+| | 2. Xác định loại dịch vụ và thông tin chuyến đi. |
+| | 3. Áp dụng quy tắc tính cước tương ứng. |
+| | 4. Tính số tiền khách hàng cần thanh toán. |
+| | 5. Lưu số tiền cước vào thông tin chuyến. |
+| | 6. Hiển thị số tiền cần thanh toán. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| | 4.1. Có phụ phí hoặc khuyến mãi → áp dụng theo chính sách doanh nghiệp. |
+| 3.1. Loại dịch vụ có cách tính cước khác nhau. | 3.2. Áp dụng quy tắc tính cước tương ứng. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| | 5.1. Thiếu dữ liệu tính cước → thông báo lỗi và chuyển xử lý. |
+| 4.1. Không đủ thông tin để tính cước. | 4.2. Thông báo không thể tính cước và yêu cầu bổ sung thông tin. |
+| 5.1. Không thể lưu số tiền cước. | 5.2. Ghi nhận lỗi và thông báo tính cước chưa hoàn tất. |
 
-## UC09 – Thanh toán chuyến đi
+## UC17 – Thanh toán tiền mặt
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Thanh toán chuyến đi |
-| **Mô tả sơ lược** | Cho phép khách hàng thanh toán chi phí chuyến đi bằng tiền mặt hoặc phương thức điện tử. |
+| **Tên use case** | Thanh toán tiền mặt |
+| **Mô tả sơ lược** | Khách hàng thanh toán cước chuyến đi bằng tiền mặt cho tài xế. |
 | **Actor chính** | Khách hàng |
-| **Actor phụ** | Nhà cung cấp thanh toán / Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành và hệ thống đã tính cước. |
-| **Hậu điều kiện (Post-condition)** | Giao dịch được ghi nhận thành công hoặc thất bại. |
+| **Actor phụ** | Tài xế, Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành và cước chuyến đi đã được tính. |
+| **Hậu điều kiện (Post-condition)** | Hệ thống ghi nhận trạng thái thanh toán tiền mặt của chuyến đi. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn phương thức thanh toán. | 2. Hiển thị số tiền cần thanh toán. |
-| 3. Xác nhận thanh toán. | 4. Kiểm tra phương thức thanh toán. |
-| 5. Nếu thanh toán điện tử, xác nhận giao dịch. | 6. Gửi yêu cầu đến nhà cung cấp thanh toán. |
-| | 7. Nhận kết quả giao dịch. |
-| | 8. Cập nhật trạng thái thanh toán. |
-| | 9. Lưu thông tin giao dịch. |
-| | 10. Thông báo kết quả thanh toán. |
+| 1. Khách hàng thanh toán số tiền cước bằng tiền mặt. | 2. Hiển thị số tiền cần thanh toán. |
+| 3. Khách hàng giao tiền cho tài xế. | 4. Tiếp nhận xác nhận thanh toán. |
+| | 5. Ghi nhận trạng thái thanh toán tiền mặt. |
+| | 6. Cập nhật giao dịch thanh toán. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 3.1. Chọn thanh toán tiền mặt. | 3.2. Ghi nhận trạng thái thanh toán tiền mặt. |
+| 3.1. Số tiền khách hàng đưa khác số tiền cước. | 3.2. Tài xế xác nhận số tiền thực tế và hoàn trả/thanh toán phần chênh lệch. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 7.1. Giao dịch thất bại. | 7.2. Thông báo thanh toán thất bại và cho phép thanh toán lại theo chính sách. |
-| 7.3. Nhà cung cấp thanh toán không phản hồi. | 7.4. Ghi nhận giao dịch đang xử lý và thông báo cho khách hàng. |
+| 5.1. Không thể ghi nhận thanh toán. | 5.2. Thông báo lỗi và ghi nhận giao dịch chưa hoàn tất. |
 
-## UC10 – Hủy chuyến
+## UC18 – Thanh toán điện tử
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Hủy chuyến |
-| **Mô tả sơ lược** | Cho phép khách hàng hủy yêu cầu hoặc chuyến đi theo chính sách của doanh nghiệp. |
+| **Tên use case** | Thanh toán điện tử |
+| **Mô tả sơ lược** | Khách hàng thanh toán cước chuyến đi thông qua nhà cung cấp dịch vụ thanh toán điện tử. |
 | **Actor chính** | Khách hàng |
-| **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập và chuyến đang ở trạng thái cho phép hủy. |
-| **Hậu điều kiện (Post-condition)** | Chuyến được cập nhật trạng thái hủy và các bên liên quan được thông báo. |
+| **Actor phụ** | Nhà cung cấp thanh toán, Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành và cước chuyến đi đã được tính. |
+| **Hậu điều kiện (Post-condition)** | Giao dịch thanh toán điện tử được xử lý và kết quả thanh toán được ghi nhận. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chuyến cần hủy. | 2. Kiểm tra trạng thái chuyến. |
-| 3. Chọn chức năng "Hủy chuyến". | 4. Hiển thị yêu cầu xác nhận hủy. |
-| 5. Xác nhận hủy chuyến. | 6. Kiểm tra chính sách hủy. |
-| | 7. Cập nhật trạng thái chuyến thành "Đã hủy". |
-| | 8. Thông báo cho tài xế và các bên liên quan. |
+| 1. Khách hàng chọn phương thức thanh toán điện tử. | 2. Hiển thị thông tin số tiền cần thanh toán. |
+| 3. Khách hàng xác nhận thanh toán. | 4. Gửi yêu cầu thanh toán đến nhà cung cấp thanh toán. |
+| | 5. Nhận kết quả giao dịch từ nhà cung cấp thanh toán. |
+| | 6. Ghi nhận mã giao dịch, số tiền, thời gian và trạng thái thanh toán. |
+| | 7. Thông báo kết quả thanh toán cho khách hàng. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 5.1. Khách hàng không xác nhận. | 5.2. Hủy thao tác và giữ nguyên chuyến. |
+| 3.1. Khách hàng hủy thao tác thanh toán. | 3.2. Hệ thống dừng yêu cầu thanh toán và giữ trạng thái chưa thanh toán. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 6.1. Chuyến không được phép hủy. | 6.2. Thông báo lý do không thể hủy chuyến. |
+| 5.1. Giao dịch thanh toán thất bại. | 5.2. Hệ thống ghi nhận trạng thái thanh toán thất bại và thông báo cho khách hàng. |
+| 6.1. Không thể ghi nhận giao dịch. | 6.2. Hệ thống thông báo lỗi và ghi nhận giao dịch chưa hoàn tất. |
 
-## UC11 – Gửi thông báo
+## UC19 – Thanh toán lại
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Gửi thông báo |
-| **Mô tả sơ lược** | Gửi thông báo đến khách hàng hoặc tài xế khi xảy ra các sự kiện quan trọng. |
-| **Actor chính** | Hệ thống CAB |
-| **Actor phụ** | Nhà cung cấp dịch vụ thông báo |
-| **Tiền điều kiện (Pre-condition)** | Hệ thống phát sinh sự kiện cần gửi thông báo. |
-| **Hậu điều kiện (Post-condition)** | Thông báo được gửi hoặc hệ thống ghi nhận trạng thái gửi thất bại. |
+| **Tên use case** | Thanh toán lại |
+| **Mô tả sơ lược** | Khách hàng thực hiện lại thanh toán điện tử khi giao dịch trước đó thất bại. |
+| **Actor chính** | Khách hàng |
+| **Actor phụ** | Nhà cung cấp thanh toán, Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Giao dịch thanh toán điện tử trước đó thất bại và chuyến đi chưa được thanh toán thành công. |
+| **Hậu điều kiện (Post-condition)** | Giao dịch được thanh toán thành công hoặc tiếp tục được ghi nhận là thất bại. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| | 1. Phát hiện sự kiện cần thông báo. |
-| | 2. Xác định người nhận. |
-| | 3. Xác định nội dung thông báo. |
-| | 4. Xác định kênh thông báo. |
-| | 5. Gửi thông báo đến nhà cung cấp. |
-| | 6. Nhận kết quả gửi. |
-| | 7. Lưu trạng thái thông báo. |
+| 1. Khách hàng chọn "Thanh toán lại". | 2. Hiển thị thông tin giao dịch chưa thanh toán. |
+| 3. Khách hàng xác nhận thanh toán lại. | 4. Gửi lại yêu cầu thanh toán đến nhà cung cấp thanh toán. |
+| | 5. Nhận kết quả giao dịch. |
+| | 6. Cập nhật trạng thái thanh toán. |
+| | 7. Thông báo kết quả cho khách hàng. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| | 5.1. Kênh thông báo chính không khả dụng → sử dụng kênh thay thế theo chính sách. |
+| 3.1. Khách hàng không tiếp tục thanh toán. | 3.2. Hệ thống giữ trạng thái giao dịch chưa thanh toán. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| | 6.1. Nhà cung cấp không phản hồi → ghi nhận lỗi và thực hiện gửi lại theo chính sách. |
+| 5.1. Thanh toán lại tiếp tục thất bại. | 5.2. Hệ thống ghi nhận giao dịch thất bại và thông báo cho khách hàng. |
 
-## UC12 – Quản lý vận hành
+## UC20 – Theo dõi chuyến đang diễn ra
 
 | **Đặc tả Use Case** | |
 |---|---|
-| **Tên use case** | Quản lý vận hành |
-| **Mô tả sơ lược** | Cho phép nhân viên vận hành theo dõi và xử lý các hoạt động của hệ thống CAB. |
+| **Tên use case** | Theo dõi chuyến đang diễn ra |
+| **Mô tả sơ lược** | Nhân viên vận hành theo dõi các chuyến đang diễn ra và trạng thái của chuyến trong hệ thống. |
 | **Actor chính** | Nhân viên vận hành |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Nhân viên đã đăng nhập và có quyền vận hành. |
-| **Hậu điều kiện (Post-condition)** | Thông tin được tra cứu hoặc trường hợp bất thường được xử lý. |
+| **Tiền điều kiện (Pre-condition)** | Nhân viên vận hành đã đăng nhập và có quyền theo dõi chuyến. |
+| **Hậu điều kiện (Post-condition)** | Thông tin các chuyến đang diễn ra được hiển thị và cập nhật trên hệ thống. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Truy cập giao diện quản trị. | 2. Hiển thị dashboard vận hành. |
-| 3. Xem danh sách chuyến đang diễn ra. | 4. Hiển thị trạng thái các chuyến. |
-| 5. Xem trạng thái tài xế. | 6. Hiển thị thông tin tài xế. |
-| 7. Tra cứu chuyến hoặc giao dịch. | 8. Hiển thị kết quả tra cứu. |
-| 9. Chọn chuyến bất thường cần xử lý. | 10. Hiển thị thông tin chi tiết. |
-| 11. Thực hiện thao tác xử lý. | 12. Cập nhật thông tin và lưu lịch sử thao tác. |
+| 1. Nhân viên vận hành chọn chức năng theo dõi chuyến. | 2. Hiển thị danh sách các chuyến đang diễn ra. |
+| 3. Nhân viên chọn một chuyến cần theo dõi. | 4. Hiển thị thông tin chi tiết của chuyến. |
+| | 5. Cập nhật trạng thái chuyến theo dữ liệu hiện tại. |
+| | 6. Hiển thị thông tin chuyến cho nhân viên vận hành. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 11.1. Nhân viên không có quyền thực hiện thao tác. | 11.2. Từ chối thao tác và thông báo không đủ quyền. |
+| 3.1. Nhân viên không chọn chuyến cụ thể. | 3.2. Hệ thống tiếp tục hiển thị danh sách các chuyến đang diễn ra. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 12.1. Lỗi cập nhật dữ liệu. | 12.2. Thông báo xử lý thất bại. |
+| 5.1. Không thể cập nhật dữ liệu chuyến. | 5.2. Thông báo lỗi và thực hiện cập nhật lại. |
 
-## UC13 – Xem báo cáo
+## UC21 – Xử lý chuyến bất thường
+
+| **Đặc tả Use Case** | |
+|---|---|
+| **Tên use case** | Xử lý chuyến bất thường |
+| **Mô tả sơ lược** | Nhân viên vận hành kiểm tra và xử lý các chuyến có trạng thái hoặc tình huống bất thường. |
+| **Actor chính** | Nhân viên vận hành |
+| **Actor phụ** | Hệ thống CAB |
+| **Tiền điều kiện (Pre-condition)** | Nhân viên vận hành đã đăng nhập và có quyền xử lý chuyến bất thường. |
+| **Hậu điều kiện (Post-condition)** | Tình trạng bất thường của chuyến được xử lý và kết quả được ghi nhận vào hệ thống. |
+| **Luồng sự kiện chính (Main flow)** | |
+| **Actor** | **System** |
+| 1. Nhân viên vận hành chọn chức năng xử lý chuyến bất thường. | 2. Hiển thị danh sách các chuyến bất thường. |
+| 3. Nhân viên chọn chuyến cần xử lý. | 4. Hiển thị thông tin chi tiết của chuyến. |
+| 5. Nhân viên xác định tình trạng bất thường. | 6. Hệ thống ghi nhận tình trạng bất thường. |
+| 7. Nhân viên thực hiện phương án xử lý. | 8. Hệ thống cập nhật kết quả xử lý. |
+| | 9. Lưu thông tin xử lý và thời gian thực hiện. |
+| **Luồng sự kiện thay thế (Alternate flow)** | |
+| 3.1. Không có chuyến bất thường cần xử lý. | 3.2. Hệ thống thông báo không có dữ liệu phù hợp. |
+| **Luồng sự kiện ngoại lệ (Exception flow)** | |
+| 8.1. Không thể cập nhật kết quả xử lý. | 8.2. Thông báo lỗi và yêu cầu thực hiện lại. |
+
+## UC22 – Xem báo cáo
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Xem báo cáo |
-| **Mô tả sơ lược** | Cung cấp các báo cáo về hoạt động đặt xe và vận hành cho người có quyền. |
-| **Actor chính** | Nhân viên vận hành / Ban giám đốc |
+| **Mô tả sơ lược** | Nhân viên vận hành xem các báo cáo về hoạt động đặt xe, doanh thu và hiệu quả vận hành. |
+| **Actor chính** | Nhân viên vận hành |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Người dùng đã đăng nhập và có quyền xem báo cáo. |
-| **Hậu điều kiện (Post-condition)** | Báo cáo được tổng hợp và hiển thị theo yêu cầu. |
+| **Tiền điều kiện (Pre-condition)** | Nhân viên vận hành đã đăng nhập và có quyền xem báo cáo. |
+| **Hậu điều kiện (Post-condition)** | Báo cáo được tạo và hiển thị theo tiêu chí được lựa chọn. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Chọn chức năng "Báo cáo". | 2. Hiển thị giao diện báo cáo. |
-| 3. Chọn khoảng thời gian. | 4. Hiển thị các loại báo cáo. |
-| 5. Chọn loại báo cáo. | 6. Tổng hợp dữ liệu. |
-| | 7. Tính toán các chỉ số. |
-| | 8. Hiển thị số chuyến, doanh thu, tỷ lệ hoàn thành và tỷ lệ hủy. |
+| 1. Nhân viên vận hành chọn chức năng báo cáo. | 2. Hiển thị các loại báo cáo. |
+| 3. Nhân viên chọn loại báo cáo và khoảng thời gian. | 4. Tiếp nhận tiêu chí báo cáo. |
+| | 5. Tổng hợp dữ liệu theo tiêu chí đã chọn. |
+| | 6. Tạo báo cáo. |
+| | 7. Hiển thị kết quả báo cáo. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 3.1. Thay đổi khoảng thời gian. | 3.2. Hệ thống cập nhật lại dữ liệu báo cáo. |
+| 3.1. Nhân viên không chọn khoảng thời gian. | 3.2. Hệ thống sử dụng khoảng thời gian mặc định. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 6.1. Không thể lấy dữ liệu. | 6.2. Thông báo không thể tạo báo cáo. |
+| 5.1. Không có dữ liệu phù hợp. | 5.2. Thông báo không có dữ liệu để tạo báo cáo. |
+| 6.1. Không thể tạo báo cáo. | 6.2. Thông báo lỗi và yêu cầu thực hiện lại. |
 
-## UC14 – Đánh giá tài xế
+## UC23 – Đánh giá tài xế
 
 | **Đặc tả Use Case** | |
 |---|---|
 | **Tên use case** | Đánh giá tài xế |
-| **Mô tả sơ lược** | Cho phép khách hàng đánh giá tài xế sau khi chuyến đi hoàn thành. |
+| **Mô tả sơ lược** | Khách hàng đánh giá tài xế bằng số sao và nhận xét sau khi chuyến đi hoàn thành. |
 | **Actor chính** | Khách hàng |
 | **Actor phụ** | Hệ thống CAB |
-| **Tiền điều kiện (Pre-condition)** | Chuyến đi đã hoàn thành và khách hàng chưa đánh giá chuyến. |
-| **Hậu điều kiện (Post-condition)** | Đánh giá được lưu và liên kết với chuyến đi và tài xế. |
+| **Tiền điều kiện (Pre-condition)** | Khách hàng đã đăng nhập và chuyến đi đã hoàn thành. |
+| **Hậu điều kiện (Post-condition)** | Đánh giá và nhận xét của khách hàng được lưu và liên kết với tài xế và chuyến đi. |
 | **Luồng sự kiện chính (Main flow)** | |
 | **Actor** | **System** |
-| 1. Mở chuyến đi đã hoàn thành. | 2. Hiển thị chức năng "Đánh giá". |
-| 3. Chọn số sao đánh giá. | 4. Hiển thị mức đánh giá đã chọn. |
-| 5. Nhập nhận xét. | 6. Kiểm tra nội dung đánh giá. |
-| 7. Gửi đánh giá. | 8. Lưu đánh giá gắn với chuyến đi và tài xế. |
-| | 9. Thông báo đánh giá thành công. |
+| 1. Khách hàng chọn chuyến đã hoàn thành. | 2. Hiển thị chức năng đánh giá tài xế. |
+| 3. Khách hàng chọn số sao đánh giá. | 4. Hiển thị mức đánh giá đã chọn. |
+| 5. Khách hàng nhập nhận xét. | 6. Tiếp nhận nội dung nhận xét. |
+| 7. Khách hàng xác nhận gửi đánh giá. | 8. Kiểm tra thông tin đánh giá. |
+| | 9. Lưu số sao và nhận xét. |
+| | 10. Liên kết đánh giá với tài xế và chuyến đi. |
+| | 11. Thông báo đánh giá thành công. |
 | **Luồng sự kiện thay thế (Alternate flow)** | |
-| 5.1. Khách hàng không nhập nhận xét. | 5.2. Cho phép tiếp tục chỉ với số sao. |
+| 5.1. Khách hàng không nhập nhận xét. | 5.2. Hệ thống cho phép gửi đánh giá chỉ với số sao. |
 | **Luồng sự kiện ngoại lệ (Exception flow)** | |
-| 6.1. Đánh giá không hợp lệ. | 6.2. Thông báo lỗi và yêu cầu nhập lại. |
-| 8.1. Lỗi lưu đánh giá. | 8.2. Thông báo không thể gửi đánh giá. |
+| 8.1. Số sao không hợp lệ. | 8.2. Thông báo lỗi và yêu cầu chọn lại số sao. |
+| 9.1. Không thể lưu đánh giá. | 9.2. Thông báo lỗi và yêu cầu thực hiện lại. |
 
 ## 10. Phân tích Business Process (quy trình nghiệp vụ)
 
