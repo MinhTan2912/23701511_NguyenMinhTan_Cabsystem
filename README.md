@@ -167,7 +167,7 @@ Hệ thống CAB cần đáp ứng các yêu cầu nghiệp vụ cốt lõi nh�
 | ID | Business Requirement | Functional Requirement |
 |---|---|---|
 | **FR01** | BR01 – Đăng ký tài khoản | Hệ thống cho phép người dùng nhập thông tin cần thiết để đăng ký tài khoản, kiểm tra tính hợp lệ và đảm bảo tài khoản không bị trùng. |
-| **FR02** | BR02 – Xác thực tài khoản | Hệ thống cho phép người dùng đăng nhập, kiểm tra thông tin xác thực và đăng xuất khỏi hệ thống. |
+| **FR02** | BR02 – Đăng nhập tài khoản | Hệ thống cho phép người dùng đăng nhập, kiểm tra thông tin xác thực và đăng xuất khỏi hệ thống. |
 | **FR03** | BR03 – Cập nhật thông tin | Hệ thống cho phép khách hàng cập nhật và lưu thông tin cá nhân hợp lệ. |
 | **FR04** | BR04 – Phân quyền | Hệ thống xác định vai trò người dùng sau khi đăng nhập và chỉ cho phép truy cập các chức năng phù hợp với vai trò. |
 
