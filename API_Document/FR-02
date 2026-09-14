@@ -1,147 +1,185 @@
 openapi: 3.0.1
+
 info:
-  title: API Xác thực tài khoản
-  description: OpenAPI Spec cho Yêu cầu Chức năng FR02 (Xác thực tài khoản - Đăng nhập & Đăng xuất trong 1 API)
+  title: API Đăng nhập tài khoản
+  description: OpenAPI Spec cho Use Case UC02 (Đăng nhập tài khoản)
   version: 1.0.0
+
 servers:
   - url: https://api.ridehailing.example.com/v1
     description: Primary API Server
 
 paths:
-  /auth/authenticate:
+  /auth/login:
     post:
       tags:
         - 7.1 Quản lý tài khoản
-      summary: FR02 – Xác thực tài khoản
-      description: Hệ thống cho phép người dùng đăng nhập (kiểm tra thông tin xác thực) hoặc đăng xuất khỏi hệ thống thông qua tham số action.
-      operationId: FR02_AuthenticateAccount
+
+      summary: UC02 – Đăng nhập
+
+      description: >
+        Hệ thống cho phép người dùng đăng nhập bằng số điện thoại và mật khẩu.
+        Hệ thống kiểm tra thông tin xác thực và trả về Access Token
+        nếu thông tin đăng nhập hợp lệ.
+
+      operationId: UC02_Login
+
       requestBody:
         required: true
+
         content:
           application/json:
             schema:
               type: object
+
               required:
-                - action
+                - phone
+                - password
+
               properties:
-                action:
-                  type: string
-                  enum:
-                    - LOGIN
-                    - LOGOUT
-                  description: Hành động xác thực (LOGIN = Đăng nhập, LOGOUT = Đăng xuất)
-                  example: "LOGIN"
                 phone:
                   type: string
-                  description: Số điện thoại đăng nhập (Bắt buộc khi action = LOGIN)
+                  description: Số điện thoại đăng nhập
                   example: "0901234567"
+
                 password:
                   type: string
                   format: password
-                  description: Mật khẩu (Bắt buộc khi action = LOGIN)
+                  description: Mật khẩu đăng nhập
                   example: "Password123!"
-                token:
-                  type: string
-                  description: Access Token cần hủy phiên (Bắt buộc khi action = LOGOUT)
-                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
       responses:
+
         '200':
-          description: Thao tác xác thực (Đăng nhập/Đăng xuất) thành công
+          description: Đăng nhập thành công
+
           content:
             application/json:
               schema:
                 type: object
+
                 properties:
                   success:
                     type: boolean
                     example: true
+
                   statusCode:
                     type: integer
                     example: 200
+
                   message:
                     type: string
-                    example: "Xác thực thành công"
+                    example: "Đăng nhập thành công"
+
                   data:
                     type: object
+
                     properties:
                       accessToken:
                         type: string
+                        description: Access Token dùng để xác thực các yêu cầu tiếp theo
                         example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
                       tokenType:
                         type: string
                         example: "Bearer"
+
                       expiresIn:
                         type: integer
+                        description: Thời gian hết hạn của Access Token tính bằng giây
                         example: 86400
+
                       userInfo:
                         type: object
+
                         properties:
                           userId:
                             type: string
                             example: "usr_1001"
+
                           phone:
                             type: string
                             example: "0901234567"
+
                           fullName:
                             type: string
                             example: "Nguyen Van A"
+
                           role:
                             type: string
                             example: "CUSTOMER"
+
         '400':
-          description: Dữ liệu gửi lên không đúng định dạng hoặc thiếu trường bắt buộc
+          description: Dữ liệu đăng nhập không đúng định dạng hoặc thiếu trường bắt buộc
+
           content:
             application/json:
               schema:
                 type: object
+
                 properties:
                   success:
                     type: boolean
                     example: false
+
                   statusCode:
                     type: integer
                     example: 400
+
                   errorCode:
                     type: string
                     example: "INVALID_INPUT_DATA"
+
                   message:
                     type: string
-                    example: "Vui lòng nhập đầy đủ Số điện thoại và Mật khẩu khi đăng nhập"
+                    example: "Vui lòng nhập đầy đủ Số điện thoại và Mật khẩu"
+
         '401':
-          description: Xác thực thất bại (Sai thông tin đăng nhập hoặc Token không hợp lệ)
+          description: Đăng nhập thất bại do sai thông tin xác thực
+
           content:
             application/json:
               schema:
                 type: object
+
                 properties:
                   success:
                     type: boolean
                     example: false
+
                   statusCode:
                     type: integer
                     example: 401
+
                   errorCode:
                     type: string
-                    example: "UNAUTHORIZED"
+                    example: "INVALID_CREDENTIALS"
+
                   message:
                     type: string
                     example: "Số điện thoại hoặc mật khẩu không chính xác"
+
         '500':
           description: Lỗi hệ thống máy chủ
+
           content:
             application/json:
               schema:
                 type: object
+
                 properties:
                   success:
                     type: boolean
                     example: false
+
                   statusCode:
                     type: integer
                     example: 500
+
                   errorCode:
                     type: string
                     example: "INTERNAL_SERVER_ERROR"
+
                   message:
                     type: string
                     example: "Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau."
