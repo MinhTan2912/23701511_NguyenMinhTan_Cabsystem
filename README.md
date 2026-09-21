@@ -1327,3 +1327,155 @@ flowchart TD
 | **RULE-18** | **UC09** | Đánh giá tài xế | Khách hàng | Khách hàng chỉ được đánh giá tài xế sau khi chuyến đi hoàn thành. Kết quả đánh giá phải được lưu gắn với chuyến đi và tài xế. |
 | **RULE-19** | **UC10** | Quản lý vận hành | Nhân viên vận hành | Nhân viên vận hành được phép theo dõi chuyến, trạng thái tài xế, tra cứu lịch sử và xử lý các trường hợp chuyến đi bất thường theo quyền được cấp. |
 | **RULE-20** | **UC10** | Bảo mật và nhật ký hoạt động | Nhân viên vận hành, Quản trị viên | Các thao tác quản trị quan trọng phải được kiểm soát quyền truy cập và ghi nhận vào nhật ký hệ thống để phục vụ kiểm tra khi có sự cố. |
+
+## Sub-Domain
+```mermaid
+flowchart TD
+
+CAB["HỆ THỐNG ĐẶT XE CAB - DOMAIN"]
+
+CAB --> IDENTITY
+CAB --> DRIVER
+CAB --> BOOKING
+CAB --> DISPATCH
+CAB --> TRIP
+CAB --> PAYMENT
+CAB --> NOTIFICATION
+CAB --> OPERATION
+CAB --> RATING
+
+subgraph IDENTITY["1. MIỀN QUẢN LÝ TÀI KHOẢN - IDENTITY & ACCESS"]
+direction TB
+I1["Đăng ký tài khoản"]
+I2["Đăng nhập / Đăng xuất"]
+I3["Xác thực tài khoản"]
+I4["Quản lý thông tin cá nhân"]
+I5["Quản lý vai trò và phân quyền"]
+I6["Quản lý phiên đăng nhập"]
+end
+
+subgraph DRIVER["2. MIỀN QUẢN LÝ TÀI XẾ - DRIVER MANAGEMENT"]
+direction TB
+D1["Quản lý hồ sơ tài xế"]
+D2["Quản lý phương tiện"]
+D3["Quản lý trạng thái tài xế"]
+D4["Quản lý khả năng nhận chuyến"]
+D5["Quản lý vị trí GPS"]
+D6["Khóa / kích hoạt tài xế"]
+end
+
+subgraph BOOKING["3. MIỀN ĐẶT XE - BOOKING CORE DOMAIN"]
+direction TB
+B1["Tạo yêu cầu đặt xe"]
+B2["Quản lý điểm đón"]
+B3["Quản lý điểm đến"]
+B4["Lựa chọn loại xe"]
+B5["Quản lý thông tin đặt xe"]
+B6["Cập nhật trạng thái yêu cầu đặt xe"]
+B7["Hủy yêu cầu đặt xe"]
+end
+
+subgraph DISPATCH["4. MIỀN TÌM VÀ PHÂN CÔNG TÀI XẾ - DISPATCH CORE DOMAIN"]
+direction TB
+DS1["Tìm kiếm tài xế phù hợp"]
+DS2["Kiểm tra vị trí và trạng thái tài xế"]
+DS3["Áp dụng chính sách ưu tiên"]
+DS4["Gửi yêu cầu nhận chuyến"]
+DS5["Xử lý nhận / từ chối chuyến"]
+DS6["Tìm tài xế thay thế"]
+DS7["Xử lý trường hợp không có tài xế"]
+end
+
+subgraph TRIP["5. MIỀN QUẢN LÝ CHUYẾN ĐI - TRIP CORE DOMAIN"]
+direction TB
+T1["Khởi tạo chuyến đi"]
+T2["Quản lý vòng đời chuyến đi"]
+T3["Theo dõi vị trí tài xế"]
+T4["Theo dõi trạng thái chuyến đi"]
+T5["Cập nhật trạng thái chuyến"]
+T6["Xử lý hủy chuyến"]
+T7["Lưu trữ lịch sử chuyến đi"]
+end
+
+subgraph PAYMENT["6. MIỀN TÍNH CƯỚC VÀ THANH TOÁN - PAYMENT"]
+direction TB
+P1["Ước tính cước chuyến đi"]
+P2["Tính cước thực tế"]
+P3["Quản lý phương thức thanh toán"]
+P4["Thanh toán tiền mặt"]
+P5["Thanh toán trực tuyến"]
+P6["Quản lý trạng thái thanh toán"]
+P7["Xử lý thanh toán thất bại / thử lại"]
+P8["Quản lý giao dịch"]
+end
+
+subgraph NOTIFICATION["7. MIỀN THÔNG BÁO - NOTIFICATION"]
+direction TB
+N1["Thông báo yêu cầu nhận chuyến"]
+N2["Thông báo tài xế nhận chuyến"]
+N3["Thông báo tài xế đã đến"]
+N4["Thông báo trạng thái chuyến đi"]
+N5["Thông báo hủy chuyến"]
+N6["Thông báo kết quả thanh toán"]
+end
+
+subgraph OPERATION["8. MIỀN QUẢN TRỊ VÀ VẬN HÀNH - OPERATION"]
+direction TB
+O1["Giám sát chuyến đi đang diễn ra"]
+O2["Giám sát trạng thái tài xế"]
+O3["Xử lý chuyến đi gặp sự cố"]
+O4["Lưu vết xử lý sự cố"]
+O5["Tra cứu thông tin chuyến đi"]
+O6["Tra cứu giao dịch"]
+O7["Quản lý đánh giá"]
+O8["Thống kê số lượng chuyến"]
+O9["Báo cáo doanh thu"]
+O10["Quản lý cấu hình hệ thống"]
+end
+
+subgraph RATING["9. MIỀN ĐÁNH GIÁ CHUYẾN ĐI - RATING"]
+direction TB
+R1["Đánh giá tài xế"]
+R2["Nhập nhận xét"]
+R3["Lưu đánh giá"]
+R4["Liên kết đánh giá với chuyến đi"]
+end
+
+IDENTITY ---|"Cung cấp thông tin người dùng"| BOOKING
+
+DRIVER ---|"Cung cấp thông tin tài xế"| DISPATCH
+
+BOOKING ---|"Gửi yêu cầu tìm tài xế"| DISPATCH
+
+DISPATCH ---|"Phân công tài xế"| TRIP
+
+BOOKING ---|"Khởi tạo chuyến đi"| TRIP
+
+DRIVER ---|"Tài xế thực hiện chuyến đi"| TRIP
+
+TRIP ---|"Phát sinh dữ liệu cước"| PAYMENT
+
+TRIP ---|"Phát sinh sự kiện chuyến đi"| NOTIFICATION
+
+PAYMENT ---|"Gửi kết quả thanh toán"| NOTIFICATION
+
+TRIP ---|"Kết thúc chuyến đi"| RATING
+
+TRIP ---|"Giám sát chuyến đi"| OPERATION
+
+DRIVER ---|"Giám sát tài xế"| OPERATION
+
+PAYMENT ---|"Tra cứu giao dịch / báo cáo"| OPERATION
+
+RATING ---|"Tổng hợp dữ liệu đánh giá"| OPERATION
+
+style CAB fill:#1565C0,color:#ffffff,stroke:#0D47A1,stroke-width:3px
+style BOOKING fill:#FFF3E0,stroke:#EF6C00,stroke-width:3px
+style DISPATCH fill:#FCE4EC,stroke:#C2185B,stroke-width:2px
+style TRIP fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px
+style PAYMENT fill:#EDE7F6,stroke:#5E35B1,stroke-width:2px
+style IDENTITY fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
+style DRIVER fill:#E0F7FA,stroke:#00838F,stroke-width:2px
+style NOTIFICATION fill:#FFF8E1,stroke:#F9A825,stroke-width:2px
+style OPERATION fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+style RATING fill:#F1F8E9,stroke:#558B2F,stroke-width:2px
